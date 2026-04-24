@@ -3,14 +3,16 @@ import { join } from "node:path";
 import type { StackProfile, RuleSet } from "../types.js";
 import { getBaseRules, getLanguageRules, getToolingRules } from "../templates/base.js";
 import { getFrameworkRules } from "../templates/fragments/index.js";
+import { getLibraryRules } from "../templates/libraries/index.js";
 
 export function buildRuleSet(profile: StackProfile, customRules?: RuleSet): RuleSet {
   const base = getBaseRules();
   const lang = getLanguageRules(profile);
   const tooling = getToolingRules(profile);
   const framework = getFrameworkRules(profile.framework);
+  const libraries = getLibraryRules(profile.libraries);
 
-  return mergeRuleSets(base, lang, tooling, framework ?? {}, customRules ?? {});
+  return mergeRuleSets(base, lang, tooling, framework ?? {}, libraries, customRules ?? {});
 }
 
 export async function loadCustomRules(dir: string): Promise<RuleSet | undefined> {

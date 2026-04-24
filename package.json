@@ -1,6 +1,6 @@
 {
   "name": "@blackforge/onerules",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "description": "One command. Every AI tool. Perfect rules.",
   "type": "module",
   "bin": {
