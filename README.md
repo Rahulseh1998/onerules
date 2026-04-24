@@ -19,7 +19,7 @@
 ---
 
 <p align="center">
-  <img src="./demo.gif" alt="onerules demo" width="860">
+  <img src="https://raw.githubusercontent.com/Rahulseh1998/onerules/main/demo.gif" alt="onerules demo" width="860">
 </p>
 
 ## The Problem
