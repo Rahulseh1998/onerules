@@ -6,7 +6,7 @@ import { generateAll } from "./generate/index.js";
 import { formatStackSummary } from "./generate/common.js";
 import type { ToolId } from "./types.js";
 
-const VERSION = "0.3.0";
+const VERSION = "0.3.1";
 
 const program = new Command();
 
