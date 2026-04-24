@@ -9,6 +9,8 @@ import { generateGemini } from "./gemini.js";
 import { generateWindsurf } from "./windsurf.js";
 import { generateCline } from "./cline.js";
 import { generateAider } from "./aider.js";
+import { generateRoo } from "./roo.js";
+import { generateTrae } from "./trae.js";
 
 const generators: Record<ToolId, (profile: StackProfile) => ToolOutput> = {
   claude: generateClaude,
@@ -19,9 +21,11 @@ const generators: Record<ToolId, (profile: StackProfile) => ToolOutput> = {
   windsurf: generateWindsurf,
   cline: generateCline,
   aider: generateAider,
+  roo: generateRoo,
+  trae: generateTrae,
 };
 
-const ALL_TOOLS: ToolId[] = ["claude", "cursor", "copilot", "codex", "gemini", "windsurf", "cline", "aider"];
+const ALL_TOOLS: ToolId[] = ["claude", "cursor", "copilot", "codex", "gemini", "windsurf", "cline", "aider", "roo", "trae"];
 
 export interface GenerateResult {
   outputs: ToolOutput[];

@@ -2,7 +2,7 @@
   <h1 align="center">onerules</h1>
   <p align="center"><strong>One command. Every AI tool. Perfect rules.</strong></p>
   <p align="center">
-    Auto-detect your stack and generate optimized coding rules for Claude Code, Cursor, Copilot, Gemini CLI, Codex, Windsurf, Cline, and Aider — in under 2 seconds.
+    Auto-detect your stack and generate optimized coding rules for 10 AI tools — in under 2 seconds.
   </p>
 </p>
 
@@ -10,6 +10,10 @@
   <a href="https://www.npmjs.com/package/onerules"><img src="https://img.shields.io/npm/v/onerules.svg" alt="npm version"></a>
   <a href="https://www.npmjs.com/package/onerules"><img src="https://img.shields.io/npm/dm/onerules.svg" alt="npm downloads"></a>
   <a href="https://github.com/onerules/onerules/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="license"></a>
+</p>
+
+<p align="center">
+  <a href="./README.zh-CN.md">简体中文</a>
 </p>
 
 ---
@@ -30,6 +34,8 @@ Every AI coding tool has its own rules file. If you use more than one tool, you'
 | Windsurf | `.windsurfrules` |
 | Cline | `.clinerules` |
 | Aider | `CONVENTIONS.md` |
+| Roo Code | `.roo/rules/*.md` |
+| Trae | `.trae/rules/*.md` |
 
 **onerules** generates all of them from a single command.
 
@@ -46,15 +52,17 @@ That's it. No install, no API keys, no config. Works offline.
 
   Detected: Next.js + TypeScript + Tailwind CSS + Prisma + pnpm
 
-  Generated 8 files:
-    ✓ CLAUDE.md                    (Claude Code)
-    ✓ AGENTS.md                    (OpenAI Codex)
-    ✓ GEMINI.md                    (Gemini CLI)
-    ✓ .cursor/rules/onerules.mdc   (Cursor)
-    ✓ .github/copilot-instructions.md (GitHub Copilot)
-    ✓ .windsurfrules               (Windsurf)
-    ✓ .clinerules                  (Cline)
-    ✓ CONVENTIONS.md               (Aider)
+  Generated 10 files:
+    ✓ CLAUDE.md                         (Claude Code)
+    ✓ .cursor/rules/onerules.mdc        (Cursor)
+    ✓ .github/copilot-instructions.md   (GitHub Copilot)
+    ✓ AGENTS.md                         (OpenAI Codex)
+    ✓ GEMINI.md                         (Gemini CLI)
+    ✓ .windsurfrules                    (Windsurf)
+    ✓ .clinerules                       (Cline)
+    ✓ CONVENTIONS.md                    (Aider)
+    ✓ .roo/rules/onerules.md            (Roo Code)
+    ✓ .trae/rules/onerules.md           (Trae)
 
   Done in 1.2s
 ```
@@ -62,10 +70,10 @@ That's it. No install, no API keys, no config. Works offline.
 ## Features
 
 - **Zero-config** — auto-detects your stack from package.json, pyproject.toml, go.mod, Cargo.toml, or Gemfile
-- **8 AI tools** — generates the correct file format for each tool
+- **10 AI tools** — generates the correct file format for each tool
+- **15 frameworks** — deep, opinionated rules for Next.js, React, Vue, Nuxt, SvelteKit, Astro, Remix, Express, Hono, FastAPI, Django, Flask, Rails, Gin, Axum
 - **No LLM required** — deterministic, fast (<2s), works completely offline
-- **Smart rules** — aggregates best practices from top-starred projects (Karpathy, BMAD, claude-code-best-practice)
-- **Framework-aware** — ships with deep rules for Next.js, React, FastAPI, and more
+- **Smart rules** — principle-based best practices, not 500-line rule dumps
 - **Safe by default** — skips existing files unless you use `--force`
 
 ## Supported Stacks
@@ -73,8 +81,11 @@ That's it. No install, no API keys, no config. Works offline.
 ### Languages
 TypeScript, JavaScript, Python, Go, Rust, Ruby
 
-### Frameworks
-Next.js, React, Vue, Nuxt, SvelteKit, Astro, Remix, Angular, Express, Fastify, Hono, FastAPI, Django, Flask, Rails, Gin, Fiber, Actix, Axum
+### Frameworks (with deep rules)
+Next.js, React, Vue, Nuxt, SvelteKit, Astro, Remix, Express, Hono, FastAPI, Django, Flask, Rails, Gin, Axum
+
+### Also detected
+Angular, Fastify, Fiber, Actix, Tauri, Electron, React Native
 
 ### Tooling
 pnpm, yarn, bun, npm, uv, poetry, pip, cargo, bundler | Vitest, Jest, Playwright, Cypress, pytest, RSpec | ESLint, Biome, Ruff, RuboCop | Prettier, dprint, Black
@@ -84,7 +95,7 @@ pnpm, yarn, bun, npm, uv, poetry, pip, cargo, bundler | Vitest, Jest, Playwright
 ### Generate rules (default)
 
 ```bash
-npx onerules                     # Generate for all tools
+npx onerules                     # Generate for all 10 tools
 npx onerules -t claude,cursor    # Generate for specific tools only
 npx onerules --force             # Overwrite existing files
 npx onerules --dry-run           # Preview without writing
@@ -102,14 +113,15 @@ npx onerules diff                # Show what would be generated
 onerules generates rules covering:
 
 - **Principles** — think before coding, simplicity first, surgical changes
-- **Coding patterns** — language-specific best practices (TypeScript strict, Python type hints, Go error handling, etc.)
-- **Framework patterns** — framework-specific rules (Server Components for Next.js, Pydantic models for FastAPI, etc.)
-- **Do Not** — common mistakes to avoid
-- **Testing** — test framework conventions
+- **Coding patterns** — language-specific best practices (TypeScript strict mode, Python type hints, Go error handling, Rust ownership patterns)
+- **Framework patterns** — framework-specific rules (Server Components for Next.js, Composition API for Vue, Pydantic models for FastAPI, etc.)
+- **Architecture** — project structure, separation of concerns, routing patterns
+- **Do Not** — common mistakes to avoid per language and framework
+- **Testing** — test framework conventions and best practices
 - **Security** — OWASP-aligned security practices
 - **Style & Tooling** — package manager, linter, formatter conventions
 
-Rules are principle-based and concise. No 500-line rule dumps.
+Rules are principle-based and concise — the format proven by projects with 80k+ stars.
 
 ## FAQ
 
@@ -123,17 +135,17 @@ No. onerules is fully deterministic and works offline. No API keys needed.
 Yes. Edit the generated files after running onerules. They're plain markdown.
 
 **How do I add rules for my framework?**
-Open a PR adding a fragment in `src/templates/fragments/`. We welcome contributions for all frameworks.
+Open a PR adding a fragment in `src/templates/fragments/`. See [CONTRIBUTING.md](./CONTRIBUTING.md).
 
 ## Contributing
 
-Contributions are welcome! The easiest way to contribute:
+Contributions are welcome! The easiest ways to contribute:
 
-1. Add a new framework fragment in `src/templates/fragments/`
-2. Add detection logic in `src/detect/`
-3. Submit a PR
+1. **Add a framework** — create a new file in `src/templates/fragments/` and register it in the index
+2. **Add a tool** — create a new generator in `src/generate/` for an AI tool we don't support yet
+3. **Improve rules** — submit PRs improving the quality of generated rules for any framework
 
-See [CONTRIBUTING.md](./CONTRIBUTING.md) for details.
+See [CONTRIBUTING.md](./CONTRIBUTING.md) for the full guide.
 
 ## License
 

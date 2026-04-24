@@ -50,7 +50,9 @@ export type ToolId =
   | "gemini"
   | "windsurf"
   | "cline"
-  | "aider";
+  | "aider"
+  | "roo"
+  | "trae";
 
 export interface ToolOutput {
   toolId: ToolId;

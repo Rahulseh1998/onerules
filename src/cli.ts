@@ -19,7 +19,7 @@ program
   .command("generate", { isDefault: true })
   .description("Detect your stack and generate AI coding rules for all tools")
   .option("-d, --dir <path>", "Project directory", ".")
-  .option("-t, --tools <tools>", "Comma-separated list of tools (claude,cursor,copilot,codex,gemini,windsurf,cline,aider)")
+  .option("-t, --tools <tools>", "Comma-separated list of tools (claude,cursor,copilot,codex,gemini,windsurf,cline,aider,roo,trae)")
   .option("-f, --force", "Overwrite existing files")
   .option("--dry-run", "Preview what would be generated without writing files")
   .action(async (opts) => {
