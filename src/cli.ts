@@ -30,7 +30,7 @@ async function checkGitignore(dir: string, outputs: ToolOutput[]): Promise<strin
   }
 }
 
-const VERSION = "0.9.0";
+const VERSION = "0.9.1";
 
 const program = new Command();
 

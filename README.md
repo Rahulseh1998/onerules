@@ -138,6 +138,7 @@ Two Next.js projects with different libraries get different rules.
 - **`onerules init`** — interactive wizard with tool selection and stack preview
 - **`onerules inspect`** — shows everything detected and which rules will apply
 - **`onerules monorepo`** — per-workspace rules in monorepos
+- **`--merge` mode** — smart merge: adds missing rules to existing files without overwriting project-specific content
 - **`--strict` mode** — extra aggressive rules (max function length, no default exports)
 - **`--minimal` mode** — core anti-slop only, skip framework/library details
 - **`.onerulesrc`** — custom rules that survive `onerules update`
@@ -155,9 +156,25 @@ onerules update                  # Re-detect and regenerate all files
 onerules monorepo                # Generate per-workspace in monorepos
 onerules diff                    # Preview what would be generated
 onerules -t claude,cursor        # Generate for specific tools only
+onerules --merge                 # Add missing rules to existing files
 onerules --strict                # Extra aggressive rules
 onerules --minimal               # Core anti-slop only
 onerules --force                 # Overwrite existing files
+```
+
+## Already Have a CLAUDE.md?
+
+Don't replace it — merge into it:
+
+```bash
+onerules --merge
+```
+
+This scans your existing rule files, detects which anti-slop rules you're missing, and appends only the new ones. Your project-specific context stays intact.
+
+```
+  Merged into 1 existing file:
+    + CLAUDE.md                    23 rules added (44 already present)
 ```
 
 ## Custom Rules (`.onerulesrc`)
