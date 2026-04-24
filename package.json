@@ -1,11 +1,10 @@
 {
-  "name": "allrules",
-  "version": "0.1.1",
+  "name": "@blackforge/onerules",
+  "version": "0.2.0",
   "description": "One command. Every AI tool. Perfect rules.",
   "type": "module",
   "bin": {
-    "onerules": "dist/cli.js",
-    "allrules": "dist/cli.js"
+    "onerules": "dist/cli.js"
   },
   "files": [
     "dist",

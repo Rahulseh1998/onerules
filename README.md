@@ -7,8 +7,8 @@
 </p>
 
 <p align="center">
-  <a href="https://www.npmjs.com/package/allrules"><img src="https://img.shields.io/npm/v/allrules.svg" alt="npm version"></a>
-  <a href="https://www.npmjs.com/package/allrules"><img src="https://img.shields.io/npm/dm/allrules.svg" alt="npm downloads"></a>
+  <a href="https://www.npmjs.com/package/@blackforge/onerules"><img src="https://img.shields.io/npm/v/@blackforge/onerules.svg" alt="npm version"></a>
+  <a href="https://www.npmjs.com/package/@blackforge/onerules"><img src="https://img.shields.io/npm/dm/@blackforge/onerules.svg" alt="npm downloads"></a>
   <a href="https://github.com/onerules/onerules/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="license"></a>
 </p>
 
@@ -42,7 +42,7 @@ Every AI coding tool has its own rules file. If you use more than one tool, you'
 ## Quick Start
 
 ```bash
-npx allrules
+npx @blackforge/onerules
 ```
 
 That's it. No install, no API keys, no config. Works offline.
@@ -95,23 +95,23 @@ pnpm, yarn, bun, npm, uv, poetry, pip, cargo, bundler | Vitest, Jest, Playwright
 ### Generate rules (default)
 
 ```bash
-npx allrules                     # Generate for all 10 tools
-npx allrules -t claude,cursor    # Generate for specific tools only
-npx allrules --force             # Overwrite existing files
-npx allrules --dry-run           # Preview without writing
-npx allrules -d ./my-project     # Specify project directory
+npx @blackforge/onerules                     # Generate for all 10 tools
+npx @blackforge/onerules -t claude,cursor    # Generate for specific tools only
+npx @blackforge/onerules --force             # Overwrite existing files
+npx @blackforge/onerules --dry-run           # Preview without writing
+npx @blackforge/onerules -d ./my-project     # Specify project directory
 ```
 
 ### Update existing rules
 
 ```bash
-npx allrules update              # Re-detect stack and regenerate all files
+npx @blackforge/onerules update              # Re-detect stack and regenerate all files
 ```
 
 ### Preview diff
 
 ```bash
-npx allrules diff                # Show what would be generated
+npx @blackforge/onerules diff                # Show what would be generated
 ```
 
 ## What Gets Generated
