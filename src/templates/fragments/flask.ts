@@ -4,22 +4,20 @@ export function getFlaskRules(): RuleSet {
   return {
     projectContext: "This is a Flask application.",
     codingPatterns: [
-      "Use Blueprints to organize routes by feature/domain.",
-      "Use Flask's application factory pattern (`create_app()`) for configuration and testing.",
-      "Use `request.get_json()` for JSON body parsing. Validate with Pydantic or marshmallow.",
-      "Use `abort()` with HTTP status codes for error responses.",
-      "Use `flask.g` for request-scoped data. Use `flask.session` for user sessions.",
+      "Use the application factory pattern (`create_app()`). Not a global `app = Flask(__name__)` at module level.",
+      "Use Blueprints to organize routes by feature. One Blueprint per domain.",
+      "Validate input with Pydantic or marshmallow. Not manual `if not request.json.get('name')` chains.",
+      "Use `abort(404)` for HTTP errors. Use `@app.errorhandler` for custom error responses.",
+      "Use Flask-SQLAlchemy for database access. Use Alembic (Flask-Migrate) for migrations.",
     ],
     architecture: [
-      "Organize by feature: each Blueprint gets its own directory with routes, models, and schemas.",
-      "Use SQLAlchemy with Flask-SQLAlchemy for database operations.",
-      "Use Alembic (via Flask-Migrate) for database migrations.",
-      "Use a configuration class hierarchy (Config, DevConfig, ProdConfig) for environment-specific settings.",
+      "Organize by feature: `auth/routes.py`, `auth/models.py`, `auth/schemas.py`. Not by layer.",
+      "Config in classes: `Config`, `DevConfig(Config)`, `ProdConfig(Config)`. Load from environment.",
     ],
     doNot: [
-      "Do not use the global `app` object directly. Use the application factory pattern.",
-      "Do not put business logic in route handlers. Extract to service functions.",
-      "Do not use `flask.g` for data that should persist across requests — use sessions or database.",
+      "DO NOT create a global `app` object used everywhere. Use the factory pattern with `current_app` in Blueprints.",
+      "DO NOT create abstract service classes for simple database operations. A function that queries SQLAlchemy is a service.",
+      "DO NOT use `flask.g` to pass data between unrelated parts of a request. It's for request-scoped resources (db session), not a global state bag.",
     ],
   };
 }

@@ -4,20 +4,19 @@ export function getHonoRules(): RuleSet {
   return {
     projectContext: "This is a Hono application.",
     codingPatterns: [
-      "Use `Hono` generics for typed environment bindings: `new Hono<{ Bindings: Env }>()`.",
-      "Use `zValidator()` middleware for request validation with Zod schemas.",
-      "Use `c.json()`, `c.text()`, `c.html()` for typed responses.",
-      "Use middleware with `app.use()` for cross-cutting concerns.",
-      "Use `hono/factory` `createFactory()` for creating reusable handlers with typed context.",
+      "Use Hono generics for typed env bindings: `new Hono<{ Bindings: Env }>()`. Type the context once.",
+      "Use `zValidator()` for request validation. Zod schemas in, typed data out. Don't validate manually.",
+      "Use `c.json()`, `c.text()`, `c.html()` for typed responses. Not raw `new Response()`.",
+      "Use `app.route()` to compose sub-apps. One file per feature.",
+      "Use RPC mode with `hc` client for end-to-end type safety between server and client.",
     ],
     architecture: [
-      "Use `app.route()` to compose sub-applications by feature.",
-      "Use RPC mode (`hc` client) for end-to-end type safety between server and client.",
-      "Hono is runtime-agnostic. Prefer Web Standard APIs (Request, Response, fetch) over Node-specific APIs.",
+      "Hono runs everywhere — Cloudflare Workers, Deno, Bun, Node. Use Web Standard APIs (Request, Response, fetch) not Node-specific APIs.",
     ],
     doNot: [
-      "Do not use Node.js `req`/`res` patterns. Use Hono's `c` (context) object.",
-      "Do not import Node-specific modules when targeting edge runtimes (Cloudflare Workers, Deno).",
+      "DO NOT use Express patterns (`req.body`, `res.json()`). Use Hono's `c` context object.",
+      "DO NOT import Node-specific modules (`fs`, `path`) when targeting edge runtimes.",
+      "DO NOT create middleware classes. Hono middleware are functions: `app.use(async (c, next) => { ... })`.",
     ],
   };
 }

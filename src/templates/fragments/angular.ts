@@ -4,29 +4,24 @@ export function getAngularRules(): RuleSet {
   return {
     projectContext: "This is an Angular application.",
     codingPatterns: [
-      "Use standalone components by default. Avoid NgModules for new components.",
-      "Use signals (`signal()`, `computed()`, `effect()`) for reactive state management.",
-      "Use the `inject()` function for dependency injection instead of constructor injection.",
-      "Use `@defer` blocks for lazy loading components.",
-      "Use the new control flow syntax (`@if`, `@for`, `@switch`) instead of `*ngIf`, `*ngFor`.",
-      "Use `input()`, `output()`, and `model()` signal-based APIs for component I/O.",
+      "Use standalone components. No NgModules for new code — they're legacy.",
+      "Use signals: `signal()` for state, `computed()` for derived values, `effect()` for side effects. Not BehaviorSubject for everything.",
+      "Use `inject()` for dependency injection, not constructor injection. Cleaner and works in functions.",
+      "Use `@defer` blocks for lazy loading components. Not dynamic imports with ViewContainerRef.",
+      "Use new control flow: `@if`, `@for`, `@switch`. Not `*ngIf`, `*ngFor`, `*ngSwitch`.",
+      "Use `input()`, `output()`, `model()` signal-based APIs. Not `@Input()` and `@Output()` decorators.",
     ],
     architecture: [
-      "Organize by feature, not by type. Each feature gets its own directory with components, services, and models.",
-      "Use services for business logic and data access. Components should only handle presentation.",
-      "Use route-level lazy loading with `loadComponent` for code splitting.",
-      "Use interceptors for cross-cutting HTTP concerns (auth headers, error handling).",
+      "Organize by feature. Each feature is a standalone component tree with its own routes, services, and models.",
+      "Use lazy loading with `loadComponent` in routes for code splitting.",
+      "Services hold business logic and state. Components handle presentation only.",
     ],
     doNot: [
-      "Do not use `any` type. Angular's strict mode should be enabled.",
-      "Do not subscribe to Observables in components without managing unsubscription. Use `async` pipe or `takeUntilDestroyed()`.",
-      "Do not use `NgModules` for new code. Use standalone components.",
-      "Do not use `*ngIf` or `*ngFor` structural directives. Use `@if` and `@for` control flow.",
-    ],
-    testing: [
-      "Use `TestBed` for component and service tests.",
-      "Use `HttpTestingController` for HTTP service tests.",
-      "Prefer testing component behavior over implementation details.",
+      "DO NOT create NgModules. Standalone components are the standard since Angular 17.",
+      "DO NOT use `*ngIf` or `*ngFor`. Use `@if` and `@for` control flow.",
+      "DO NOT subscribe to Observables in components without cleanup. Use `async` pipe in templates or `takeUntilDestroyed()` in code.",
+      "DO NOT create a base component class that 30 components extend. Angular composition > inheritance.",
+      "DO NOT use `any`. Enable strict mode. If types are hard, the architecture is wrong.",
     ],
   };
 }

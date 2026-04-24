@@ -2,25 +2,24 @@ import type { RuleSet } from "../../types.js";
 
 export function getSveltekitRules(): RuleSet {
   return {
-    projectContext: "This is a SvelteKit application.",
+    projectContext: "This is a SvelteKit application using Svelte 5.",
     codingPatterns: [
-      "Use Svelte 5 runes: `$state()` for reactive state, `$derived()` for computed values, `$effect()` for side effects.",
+      "Use Svelte 5 runes: `$state()` for reactive state, `$derived()` for computed values, `$effect()` for side effects. Not Svelte 4 syntax.",
       "Use `+page.server.ts` for server-side data loading. Use `+page.ts` for universal (SSR + client) loading.",
-      "Use form actions (`+page.server.ts` `actions`) for form submissions. Use progressive enhancement with `use:enhance`.",
+      "Use form actions in `+page.server.ts` for mutations. Use `use:enhance` for progressive enhancement.",
       "Use `$props()` for component props. Use `$bindable()` for two-way binding.",
-      "Use snippets (`{#snippet}`) instead of slots for content composition.",
+      "Use snippets (`{#snippet}`) for content composition. Not slots (deprecated in Svelte 5).",
     ],
     architecture: [
-      "Use file-based routing in `src/routes/`. Group routes with `(group)` directories.",
-      "Use `+layout.server.ts` for shared data loading across routes.",
-      "Use `$lib/` alias for shared code (`src/lib/`).",
-      "Use `hooks.server.ts` for request-level middleware (auth, logging).",
+      "File-based routing in `src/routes/`. Group with `(group)` directories.",
+      "Use `$lib/` for shared code. It resolves to `src/lib/`.",
+      "Use `hooks.server.ts` for request-level concerns (auth, logging).",
     ],
     doNot: [
-      "Do not use Svelte 4 syntax (`$:`, `export let`, `<slot>`). Use Svelte 5 runes instead.",
-      "Do not mutate `$state()` arrays with push/pop — use reassignment or `$state.snapshot()`.",
-      "Do not use `+server.ts` for pages. Use `+page.server.ts` with form actions.",
-      "Do not access `$env/static/private` in client-side code.",
+      "DO NOT use Svelte 4 reactivity (`$:`, `export let`, `<slot>`). Use Svelte 5 runes.",
+      "DO NOT use `+server.ts` (API endpoint) for operations that form actions can handle.",
+      "DO NOT access `$env/static/private` in client code. It will leak server secrets.",
+      "DO NOT use `$effect()` to sync state between two `$state()` values. Use `$derived()` instead.",
     ],
   };
 }

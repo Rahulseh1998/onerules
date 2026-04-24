@@ -4,21 +4,17 @@ export function getFastifyRules(): RuleSet {
   return {
     projectContext: "This is a Fastify application.",
     codingPatterns: [
-      "Use JSON Schema for request/response validation. Fastify compiles schemas for performance.",
-      "Use the plugin system for modularity. Register features as Fastify plugins with `fastify.register()`.",
-      "Use `fastify.decorateRequest()` and `fastify.decorateReply()` to extend request/reply objects.",
-      "Use hooks (`onRequest`, `preHandler`, `onSend`) for cross-cutting concerns.",
-      "Use TypeBox or Typebox for type-safe schema definitions that double as TypeScript types.",
-    ],
-    architecture: [
-      "Use `fastify-autoload` to automatically load plugins from a directory structure.",
-      "Group routes by feature using plugins. Each plugin gets its own prefix.",
-      "Use `fastify-sensible` for standard HTTP errors and utilities.",
+      "Use JSON Schema for request/response validation. Fastify COMPILES schemas for performance — this is a core advantage.",
+      "Use the plugin system for modularity. `fastify.register(plugin)` with encapsulation.",
+      "Use TypeBox for schemas that double as TypeScript types. Write the schema once, get validation AND types.",
+      "Use hooks (`onRequest`, `preHandler`, `onSend`) for cross-cutting concerns. Not middleware functions.",
+      "Use `fastify-autoload` to auto-register plugins from a directory structure.",
     ],
     doNot: [
-      "Do not use Express middleware directly. Use `fastify-express` compatibility layer only for migration.",
-      "Do not throw errors in handlers. Use `reply.code().send()` or `fastify.httpErrors`.",
-      "Do not mutate the `request` or `reply` objects outside of decorators.",
+      "DO NOT use Express middleware directly. Fastify has its own hook system that's faster.",
+      "DO NOT skip schema validation. Fastify without schemas is just a slower Express.",
+      "DO NOT create controller classes. Fastify routes are functions registered as plugins. That's the architecture.",
+      "DO NOT throw in handlers. Use `reply.code(400).send()` or `fastify.httpErrors` from fastify-sensible.",
     ],
   };
 }

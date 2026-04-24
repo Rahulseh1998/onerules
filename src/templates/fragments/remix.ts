@@ -4,24 +4,22 @@ export function getRemixRules(): RuleSet {
   return {
     projectContext: "This is a Remix application.",
     codingPatterns: [
-      "Use `loader` functions for GET data fetching. Use `action` functions for mutations (POST, PUT, DELETE).",
-      "Use `useLoaderData()` for type-safe access to loader data in components.",
-      "Use `<Form>` component for mutations with progressive enhancement. Falls back to standard HTML forms without JS.",
-      "Use `useFetcher()` for mutations that don't navigate (like/save buttons, inline edits).",
-      "Use `useNavigation()` to show loading states during transitions.",
-      "Use `json()` helper for typed JSON responses from loaders and actions.",
+      "Use `loader` for GET data. Use `action` for POST/PUT/DELETE mutations. This is the core Remix pattern.",
+      "Use `<Form>` for mutations. It works without JavaScript (progressive enhancement) and with JavaScript (no page reload).",
+      "Use `useFetcher()` for mutations that shouldn't navigate (like buttons, inline edits, toggles).",
+      "Use `useLoaderData()` for type-safe loader data in components. Use `useActionData()` for action results.",
+      "Use `json()` helper for typed responses from loaders and actions.",
     ],
     architecture: [
-      "Use file-based routing in `app/routes/`. Use dot notation for nested routes (`routes/users.$id.tsx`).",
-      "Use `root.tsx` for the document layout (html, head, body).",
-      "Use route-level error boundaries (`ErrorBoundary` export) for per-route error handling.",
-      "Colocate route-specific components and utilities with their route files.",
+      "File-based routing in `app/routes/`. Dot notation for nesting: `routes/users.$id.tsx`.",
+      "Route-level error boundaries via `ErrorBoundary` export. One per route, not one per component.",
+      "Colocate route-specific code with the route file. Don't create a global components directory for route-specific UI.",
     ],
     doNot: [
-      "Do not use `useEffect` for data fetching. Use `loader` functions instead.",
-      "Do not use client-side state management (Redux, Zustand) for server data. Use loaders.",
-      "Do not use `window.fetch` for mutations. Use `<Form>` or `useFetcher()`.",
-      "Do not import server-only code (database, secrets) in component files — keep it in loaders/actions.",
+      "DO NOT use `useEffect` for data fetching. That's the React SPA pattern. In Remix, data loading is a `loader`.",
+      "DO NOT use Redux, Zustand, or React Query for server data. Loaders ARE the data layer.",
+      "DO NOT use `window.fetch()` for mutations. Use `<Form>` or `useFetcher()` — they integrate with Remix's revalidation.",
+      "DO NOT create API routes for internal mutations. Actions in the same route file are simpler and type-safe.",
     ],
   };
 }

@@ -4,27 +4,26 @@ export function getExpressRules(): RuleSet {
   return {
     projectContext: "This is an Express.js application.",
     codingPatterns: [
-      "Use `express.Router()` to organize routes by feature/domain.",
-      "Use middleware for cross-cutting concerns (auth, logging, validation, error handling).",
-      "Always pass errors to `next(error)` in async handlers. Use a wrapper for async route handlers.",
-      "Use `express.json()` and `express.urlencoded()` for body parsing.",
-      "Validate request bodies with zod, joi, or express-validator before processing.",
+      "Use `express.Router()` for route groups. One file per feature, not one giant app.js.",
+      "Async errors MUST be caught. Use a wrapper: `const asyncHandler = (fn) => (req, res, next) => fn(req, res, next).catch(next)`. Or use express-async-errors.",
+      "Validate request bodies with zod or joi at the route level. Don't validate deep inside business logic.",
+      "One centralized error handler as the LAST middleware. `app.use((err, req, res, next) => ...)`. Don't try/catch in every route.",
+      "Use middleware for cross-cutting concerns: auth, rate limiting, request logging. Not for business logic.",
     ],
     architecture: [
-      "Separate routes, controllers, services, and data access layers.",
-      "Use a centralized error handler as the last middleware: `app.use((err, req, res, next) => ...)`.",
-      "Use environment variables for configuration. Never hardcode ports, URLs, or secrets.",
+      "Separate routes from business logic. Route handler parses request → calls a function → sends response. That's it.",
+      "Use environment variables for config. `process.env.PORT`, not `const PORT = 3000`.",
     ],
     security: [
-      "Use `helmet` for security headers.",
-      "Use `cors` middleware with explicit origins. Never use `cors()` without options in production.",
-      "Use rate limiting (`express-rate-limit`) for public endpoints.",
-      "Sanitize user input. Use parameterized queries for database operations.",
+      "Use `helmet()` for security headers. One line of code, significant protection.",
+      "Use `cors()` with explicit `origin` whitelist. Never `cors()` with no options in production.",
+      "Rate limit public endpoints. `express-rate-limit` is one line to add.",
     ],
     doNot: [
-      "Do not use `app.use(cors())` without specifying allowed origins in production.",
-      "Do not send stack traces in error responses. Use generic messages in production.",
-      "Do not store sessions in memory. Use Redis or a database-backed session store.",
+      "DO NOT create an AbstractRouterControllerBase or ControllerFactory. Express routes are functions. Keep them as functions.",
+      "DO NOT create a service layer with interfaces for a simple Express app. A function that talks to the database is fine.",
+      "DO NOT store sessions in memory. It leaks and doesn't scale. Use Redis or a database.",
+      "DO NOT send stack traces in production error responses. Generic error message to the client, detailed log to the server.",
     ],
   };
 }

@@ -4,21 +4,15 @@ export function getFiberRules(): RuleSet {
   return {
     projectContext: "This is a Go application using the Fiber web framework.",
     codingPatterns: [
-      "Use `c.BodyParser()` for request body parsing with struct tags for validation.",
-      "Use Fiber's built-in middleware for common concerns (CORS, Logger, Recover, Limiter).",
-      "Use route groups (`app.Group()`) to organize routes by version or feature.",
-      "Return JSON responses with `c.JSON()` and set status with `c.Status()`.",
-      "Use `c.Locals()` to pass data between middleware and handlers.",
-    ],
-    architecture: [
-      "Separate handlers, services, and repository layers.",
-      "Use interfaces for dependencies to enable testing and mocking.",
-      "Use `app.Use()` for middleware registration. Order matters.",
+      "Use `c.BodyParser()` for request body parsing with struct validation tags.",
+      "Use Fiber's built-in middleware: CORS, Logger, Recover, Limiter. Don't rewrite what's included.",
+      "Use route groups: `api := app.Group(\"/api/v1\")`. Not flat routes in one file.",
+      "Use `c.Locals()` to pass data between middleware and handlers (user, request ID).",
     ],
     doNot: [
-      "Do not use `c.Next()` without understanding the middleware chain.",
-      "Do not store references to `c` (Fiber context) outside the handler — it's pooled and reused.",
-      "Do not use `panic` for error handling. Return errors via `c.Status().JSON()`.",
+      "DO NOT store references to `c` (Fiber context) outside the handler. Fiber pools and reuses context objects — storing a reference causes data races.",
+      "DO NOT create handler interfaces or base handler structs. Fiber handlers are `func(c *fiber.Ctx) error`. Keep them as functions.",
+      "DO NOT use `panic` for error handling. Return `c.Status(500).JSON(errorResponse)`.",
     ],
   };
 }
