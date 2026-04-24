@@ -176,6 +176,20 @@ Here's a taste of what gets generated for a **Next.js + TypeScript** project:
   `type Shape = Circle | Square` over `abstract class Shape`.
 ```
 
+## Before vs After
+
+**Without onerules** — AI generates 130 lines of over-engineered slop for "create a user API":
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/Rahulseh1998/onerules/main/before.gif" alt="Before: AI slop" width="880">
+</p>
+
+**With onerules** — same prompt, same AI, 22 lines that do the same thing:
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/Rahulseh1998/onerules/main/after.gif" alt="After: clean code" width="880">
+</p>
+
 ## Why This Works
 
 Generic rules like "follow best practices" and "write clean code" are useless — AI tools are already trained on those. They ignore them.
