@@ -1,0 +1,24 @@
+name: 'onerules doctor'
+description: 'Score your AI coding rules and suggest anti-slop improvements'
+branding:
+  icon: 'shield'
+  color: 'orange'
+
+inputs:
+  directory:
+    description: 'Project directory to scan'
+    required: false
+    default: '.'
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+
+    - name: Run onerules doctor
+      shell: bash
+      run: |
+        npx --yes @blackforge/onerules@latest doctor --dir ${{ inputs.directory }}
