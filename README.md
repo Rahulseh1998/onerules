@@ -109,19 +109,20 @@ No API keys. No config. Works offline.
 ## Features
 
 - **Anti-slop rules** — every rule targets a specific AI code generation failure mode, not generic advice
+- **Stack-aware** — detects your libraries and generates rules specific to Prisma, Drizzle, Zod, Tailwind, React Query, Zustand, Stripe, NextAuth, and 14 more
 - **12 AI tools** — generates the correct file format for each tool
-- **23 frameworks** — deep rules for Next.js, React, Vue, Nuxt, Svelte, SvelteKit, Angular, Astro, Remix, Express, Fastify, Hono, FastAPI, Django, Flask, Rails, Gin, Fiber, Actix, Axum, Tauri, Electron, React Native
+- **23 frameworks** — deep rules for Next.js, React, Vue, Nuxt, SvelteKit, Angular, Astro, Remix, Express, Hono, FastAPI, Django, Flask, Rails, Gin, Axum, and more
 - **Custom rules** — add a `.onerulesrc` file with your own rules that survive `onerules update`
-- **Gitignore aware** — warns if generated files are in your `.gitignore`
 - **Zero-config** — auto-detects stack from package.json, pyproject.toml, go.mod, Cargo.toml, or Gemfile
 - **No LLM required** — deterministic, fast (<2s), works completely offline
-- **Safe by default** — skips existing files unless you use `--force`
 
 ## Supported Stacks
 
 **Languages:** TypeScript, JavaScript, Python, Go, Rust, Ruby
 
-**Frameworks (with anti-slop rules):** Next.js, React, Vue, Nuxt, Svelte, SvelteKit, Angular, Astro, Remix, Express, Fastify, Hono, FastAPI, Django, Flask, Rails, Gin, Fiber, Actix, Axum, Tauri, Electron, React Native
+**Frameworks:** Next.js, React, Vue, Nuxt, Svelte, SvelteKit, Angular, Astro, Remix, Express, Fastify, Hono, FastAPI, Django, Flask, Rails, Gin, Fiber, Actix, Axum, Tauri, Electron, React Native
+
+**Libraries (with specific rules):** Prisma, Drizzle, Zod, tRPC, Tailwind CSS, React Query, Zustand, Jotai, Redux Toolkit, Radix UI, Framer Motion, Stripe, NextAuth, Lucia, Mongoose, SQLAlchemy, Pydantic, Celery, Redis, Socket.io, GraphQL
 
 **Tooling:** pnpm, yarn, bun, npm, uv, poetry, pip, cargo, bundler | Vitest, Jest, Playwright, Cypress, pytest, RSpec | ESLint, Biome, Ruff, RuboCop | Prettier, dprint, Black
 

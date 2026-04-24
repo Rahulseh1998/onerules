@@ -27,7 +27,7 @@ async function checkGitignore(dir: string, outputs: ToolOutput[]): Promise<strin
   }
 }
 
-const VERSION = "0.5.0";
+const VERSION = "0.6.0";
 
 const program = new Command();
 
@@ -152,6 +152,54 @@ program
     console.log(`  ${pc.green(`Updated ${outputs.length} file${outputs.length > 1 ? "s" : ""}:`)}`);
     for (const out of outputs) {
       console.log(`    ${pc.green("✓")} ${pc.bold(padRight(out.filePath, 40))} ${pc.dim(`(${out.toolName})`)}`);
+    }
+    console.log();
+  });
+
+program
+  .command("inspect")
+  .description("Show what onerules detected in your project")
+  .option("-d, --dir <path>", "Project directory", ".")
+  .action(async (opts) => {
+    const dir = resolve(opts.dir);
+
+    console.log();
+    console.log(pc.bold("  onerules inspect") + pc.dim(` v${VERSION}`));
+    console.log();
+
+    const profile = await detectStack(dir);
+
+    if (profile.languages.length === 0) {
+      console.log(pc.yellow("  ⚠ No recognized project files found."));
+      console.log();
+      process.exit(1);
+    }
+
+    console.log(`  ${pc.bold("Languages:")}    ${profile.languages.map(l => pc.cyan(l)).join(", ") || pc.dim("none")}`);
+    console.log(`  ${pc.bold("Framework:")}    ${profile.framework ? pc.cyan(profile.framework) : pc.dim("none")}`);
+    console.log(`  ${pc.bold("Libraries:")}    ${profile.libraries.length > 0 ? profile.libraries.map(l => pc.cyan(l)).join(", ") : pc.dim("none")}`);
+    console.log(`  ${pc.bold("Package mgr:")}  ${profile.packageManager ? pc.cyan(profile.packageManager) : pc.dim("none")}`);
+    console.log(`  ${pc.bold("Test fwk:")}     ${profile.testFramework ? pc.cyan(profile.testFramework) : pc.dim("none")}`);
+    console.log(`  ${pc.bold("Linter:")}       ${profile.linter ? pc.cyan(profile.linter) : pc.dim("none")}`);
+    console.log(`  ${pc.bold("Formatter:")}    ${profile.formatter ? pc.cyan(profile.formatter) : pc.dim("none")}`);
+    console.log(`  ${pc.bold("CI:")}           ${profile.ci ? pc.cyan(profile.ci) : pc.dim("none")}`);
+    console.log(`  ${pc.bold("Monorepo:")}     ${profile.monorepo ? pc.cyan("yes") : pc.dim("no")}`);
+
+    console.log();
+
+    const ruleCategories: string[] = ["base anti-slop rules"];
+    if (profile.languages.length > 0) ruleCategories.push(`${profile.languages.join(" + ")} language rules`);
+    if (profile.framework) ruleCategories.push(`${profile.framework} framework rules`);
+    for (const lib of profile.libraries) {
+      ruleCategories.push(`${lib} library rules`);
+    }
+    if (profile.testFramework) ruleCategories.push(`${profile.testFramework} testing conventions`);
+    if (profile.linter) ruleCategories.push(`${profile.linter} linting`);
+    if (profile.formatter) ruleCategories.push(`${profile.formatter} formatting`);
+
+    console.log(`  ${pc.bold("Rules that will be generated:")}`);
+    for (const cat of ruleCategories) {
+      console.log(`    ${pc.green("✓")} ${cat}`);
     }
     console.log();
   });
