@@ -1,4 +1,4 @@
-import type { StackProfile, RuleSet } from "../types.js";
+import type { StackProfile, RuleSet, RuleMode } from "../types.js";
 
 export function getBaseRules(): RuleSet {
   return {
@@ -166,4 +166,36 @@ export function getToolingRules(profile: StackProfile): RuleSet {
   if (style.length > 0) rules.style = style;
 
   return rules;
+}
+
+export function getStrictRules(): RuleSet {
+  return {
+    principles: [
+      "Every function must fit on one screen (~40 lines). If it doesn't, split it.",
+      "Every file must have a single, clear purpose. If you need a comment to explain what the file is for, the file is doing too much.",
+    ],
+    codingPatterns: [
+      "Max 3 parameters per function. Use an options object for more.",
+      "Max 2 levels of nesting. If you need more, extract a function.",
+      "No function should have more than one side effect. Separate computation from mutation.",
+      "Every public function must have a single return type — no `string | null | undefined | Error` unions wider than 2.",
+    ],
+    doNot: [
+      "DO NOT use `console.log` for debugging. Use a proper debugger or structured logging.",
+      "DO NOT use `setTimeout` or `setInterval` for control flow. Use proper async patterns.",
+      "DO NOT use string concatenation for building HTML, SQL, URLs, or file paths. Use template literals, query builders, URL constructors, and path.join.",
+      "DO NOT use `new Date()` directly for time-sensitive logic. Inject a clock for testability.",
+      "DO NOT use default exports. Named exports are searchable, refactorable, and less error-prone.",
+      "DO NOT commit `console.log`, `debugger`, or `.only` test markers.",
+    ],
+    testing: [
+      "Every bug fix must include a regression test. No exceptions.",
+      "Test file structure must mirror source structure. `src/users/service.ts` → `src/users/service.test.ts`.",
+    ],
+    security: [
+      "Every API endpoint must validate authentication AND authorization. Auth check alone is not enough.",
+      "Use Content-Security-Policy headers. Not having CSP is a vulnerability.",
+      "Rate limit all public endpoints. Unauthenticated endpoints get stricter limits.",
+    ],
+  };
 }

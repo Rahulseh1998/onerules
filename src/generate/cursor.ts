@@ -1,8 +1,8 @@
-import type { StackProfile, ToolOutput, RuleSet } from "../types.js";
+import type { StackProfile, ToolOutput, RuleSet, RuleMode } from "../types.js";
 import { buildRuleSet, renderMarkdownRules, formatStackSummary } from "./common.js";
 
-export function generateCursor(profile: StackProfile, customRules?: RuleSet): ToolOutput {
-  const rules = buildRuleSet(profile, customRules);
+export function generateCursor(profile: StackProfile, customRules?: RuleSet, mode?: RuleMode): ToolOutput {
+  const rules = buildRuleSet(profile, customRules, mode);
 
   const frontmatter = [
     "---",

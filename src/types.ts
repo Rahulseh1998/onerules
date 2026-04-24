@@ -82,9 +82,12 @@ export interface RuleSet {
   style?: string[];
 }
 
+export type RuleMode = "default" | "strict" | "minimal";
+
 export interface GenerateOptions {
   tools?: ToolId[];
   pack?: string;
   dryRun?: boolean;
   force?: boolean;
+  mode?: RuleMode;
 }

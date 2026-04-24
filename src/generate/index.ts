@@ -1,6 +1,6 @@
 import { mkdir, writeFile, access } from "node:fs/promises";
 import { dirname, join } from "node:path";
-import type { StackProfile, ToolOutput, ToolId, RuleSet, GenerateOptions } from "../types.js";
+import type { StackProfile, ToolOutput, ToolId, RuleSet, RuleMode, GenerateOptions } from "../types.js";
 import { loadCustomRules, buildRuleSet, renderMarkdownRules, formatStackSummary } from "./common.js";
 import { generateClaude } from "./claude.js";
 import { generateCursor } from "./cursor.js";
@@ -15,7 +15,7 @@ import { generateTrae } from "./trae.js";
 import { generateKiro } from "./kiro.js";
 import { generateContinue } from "./continue.js";
 
-const generators: Record<ToolId, (profile: StackProfile, customRules?: RuleSet) => ToolOutput> = {
+const generators: Record<ToolId, (profile: StackProfile, customRules?: RuleSet, mode?: RuleMode) => ToolOutput> = {
   claude: generateClaude,
   cursor: generateCursor,
   copilot: generateCopilot,
@@ -47,12 +47,13 @@ export async function generateAll(
   const outputs: ToolOutput[] = [];
   const skipped: ToolOutput[] = [];
   const customRules = await loadCustomRules(dir);
+  const mode = options.mode ?? "default";
 
   for (const toolId of toolIds) {
     const generator = generators[toolId];
     if (!generator) continue;
 
-    const output = generator(profile, customRules);
+    const output = generator(profile, customRules, mode);
     const fullPath = join(dir, output.filePath);
 
     if (!options.force) {

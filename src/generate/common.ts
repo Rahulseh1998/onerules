@@ -1,18 +1,23 @@
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
-import type { StackProfile, RuleSet } from "../types.js";
-import { getBaseRules, getLanguageRules, getToolingRules } from "../templates/base.js";
+import type { StackProfile, RuleSet, RuleMode } from "../types.js";
+import { getBaseRules, getLanguageRules, getToolingRules, getStrictRules } from "../templates/base.js";
 import { getFrameworkRules } from "../templates/fragments/index.js";
 import { getLibraryRules } from "../templates/libraries/index.js";
 
-export function buildRuleSet(profile: StackProfile, customRules?: RuleSet): RuleSet {
+export function buildRuleSet(profile: StackProfile, customRules?: RuleSet, mode: RuleMode = "default"): RuleSet {
+  if (mode === "minimal") {
+    return mergeRuleSets(getBaseRules(), getToolingRules(profile), customRules ?? {});
+  }
+
   const base = getBaseRules();
   const lang = getLanguageRules(profile);
   const tooling = getToolingRules(profile);
   const framework = getFrameworkRules(profile.framework);
   const libraries = getLibraryRules(profile.libraries);
+  const strict = mode === "strict" ? getStrictRules() : {};
 
-  return mergeRuleSets(base, lang, tooling, framework ?? {}, libraries, customRules ?? {});
+  return mergeRuleSets(base, lang, tooling, framework ?? {}, libraries, strict, customRules ?? {});
 }
 
 export async function loadCustomRules(dir: string): Promise<RuleSet | undefined> {

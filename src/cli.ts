@@ -7,6 +7,7 @@ import { detectStack } from "./detect/index.js";
 import { generateAll } from "./generate/index.js";
 import { formatStackSummary } from "./generate/common.js";
 import type { ToolId, ToolOutput } from "./types.js";
+import { runInit } from "./init.js";
 
 async function checkGitignore(dir: string, outputs: ToolOutput[]): Promise<string[]> {
   try {
@@ -27,14 +28,22 @@ async function checkGitignore(dir: string, outputs: ToolOutput[]): Promise<strin
   }
 }
 
-const VERSION = "0.6.0";
+const VERSION = "0.7.0";
 
 const program = new Command();
 
 program
   .name("onerules")
-  .description("One command. Every AI tool. Perfect rules.")
+  .description("Stop your AI from writing slop.")
   .version(VERSION);
+
+program
+  .command("init")
+  .description("Interactive setup — choose which AI tools to generate rules for")
+  .option("-d, --dir <path>", "Project directory", ".")
+  .action(async (opts) => {
+    await runInit(opts.dir);
+  });
 
 program
   .command("generate", { isDefault: true })
@@ -43,6 +52,8 @@ program
   .option("-t, --tools <tools>", "Comma-separated list of tools (claude,cursor,copilot,codex,gemini,windsurf,cline,aider,roo,trae)")
   .option("-f, --force", "Overwrite existing files")
   .option("--dry-run", "Preview what would be generated without writing files")
+  .option("--strict", "Add extra aggressive rules (max function length, no default exports, etc.)")
+  .option("--minimal", "Generate only base anti-slop rules, skip framework/library-specific rules")
   .action(async (opts) => {
     const dir = resolve(opts.dir);
 
@@ -70,10 +81,12 @@ program
       : undefined;
 
     // Generate
+    const mode = opts.strict ? "strict" : opts.minimal ? "minimal" : "default";
     const { outputs, skipped, hasCustomRules } = await generateAll(dir, profile, {
       tools,
       force: opts.force,
       dryRun: opts.dryRun,
+      mode: mode as any,
     });
 
     if (hasCustomRules) {
@@ -208,10 +221,13 @@ program
   .command("diff")
   .description("Preview what would be generated without writing files")
   .option("-d, --dir <path>", "Project directory", ".")
+  .option("--strict", "Include strict rules")
+  .option("--minimal", "Only base anti-slop rules")
   .action(async (opts) => {
     const dir = resolve(opts.dir);
     const profile = await detectStack(dir);
-    const { outputs } = await generateAll(dir, profile, { dryRun: true, force: true });
+    const mode = opts.strict ? "strict" : opts.minimal ? "minimal" : "default";
+    const { outputs } = await generateAll(dir, profile, { dryRun: true, force: true, mode: mode as any });
 
     for (const out of outputs) {
       console.log(pc.bold(pc.cyan(`\n--- ${out.filePath} (${out.toolName}) ---\n`)));
