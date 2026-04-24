@@ -68,8 +68,14 @@ export async function detectJavaScript(dir: string, profile: StackProfile): Prom
   if (allDeps["vitest"]) profile.testFramework = "vitest";
   else if (allDeps["jest"]) profile.testFramework = "jest";
   else if (allDeps["mocha"]) profile.testFramework = "mocha";
-  else if (allDeps["playwright"] || allDeps["@playwright/test"]) profile.testFramework = "playwright";
-  else if (allDeps["cypress"]) profile.testFramework = "cypress";
+  else if (allDeps["playwright"] || allDeps["@playwright/test"]) {
+    profile.testFramework = "playwright";
+    profile.libraries.push("playwright");
+  }
+  else if (allDeps["cypress"]) {
+    profile.testFramework = "cypress";
+    profile.libraries.push("cypress");
+  }
 
   // Linter
   if (allDeps["@biomejs/biome"]) profile.linter = "biome";

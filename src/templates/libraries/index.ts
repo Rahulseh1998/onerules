@@ -275,6 +275,52 @@ const libraryRules: Record<string, RuleSet> = {
       "DO NOT expose your entire database schema as GraphQL types. Design the API for the client's needs.",
     ],
   },
+
+  three: {
+    codingPatterns: [
+      "Dispose of geometries, materials, and textures when removing objects. Three.js does NOT garbage collect GPU resources.",
+      "Use `requestAnimationFrame` for the render loop. Never use `setInterval`.",
+      "Use `BufferGeometry` not `Geometry` (removed in r125+).",
+      "Use `OrbitControls` from `three/addons/controls/OrbitControls` not from a separate package.",
+    ],
+    performance: [
+      "Reuse materials and geometries across meshes where possible. Each unique material = another draw call.",
+      "Use `InstancedMesh` for many identical objects. 1000 instances > 1000 separate meshes.",
+      "Use `Object3D.frustumCulled = true` (default) and don't disable it without reason.",
+    ],
+    doNot: [
+      "DO NOT create new materials/geometries inside the render loop. Create once, reuse.",
+      "DO NOT forget to call `.dispose()` on materials, geometries, and textures when removing objects.",
+    ],
+  },
+
+  playwright: {
+    codingPatterns: [
+      "Use locators (`page.getByRole()`, `page.getByText()`, `page.getByLabel()`) not CSS selectors. Locators are more resilient to DOM changes.",
+      "Use `expect(locator).toBeVisible()` over `waitForSelector`. Playwright auto-waits with locators.",
+      "Use `test.describe` to group related tests. Use `test.beforeEach` for shared setup.",
+      "Use `page.route()` to mock API responses in tests. Don't hit real APIs in E2E tests.",
+    ],
+    doNot: [
+      "DO NOT use `page.$()` or `page.$$()`. Use locators — they auto-wait and auto-retry.",
+      "DO NOT use `page.waitForTimeout()`. Use `expect(locator).toBeVisible()` or `page.waitForResponse()`. Hard waits are flaky.",
+      "DO NOT use CSS selectors like `.btn-primary` — they break when classes change. Use role/text/label locators.",
+    ],
+  },
+
+  cypress: {
+    codingPatterns: [
+      "Use `cy.get()` with `data-cy` attributes for stable selectors: `cy.get('[data-cy=submit]')`.",
+      "Use `cy.intercept()` to mock API responses. Don't depend on real backends in E2E tests.",
+      "Use `cy.session()` for login caching across tests. Don't log in via UI for every test.",
+      "Chain assertions: `cy.get('[data-cy=list]').should('have.length', 3)`.",
+    ],
+    doNot: [
+      "DO NOT use `cy.wait(5000)`. Use `cy.intercept()` + `cy.wait('@alias')` for deterministic waits.",
+      "DO NOT use `async/await` with Cypress commands. Cypress has its own command queue — mixing async breaks it.",
+      "DO NOT test implementation details. Test user-visible behavior.",
+    ],
+  },
 };
 
 // Map normalized names (from detection) to rule keys

@@ -3,11 +3,13 @@ import pc from "picocolors";
 import { resolve } from "node:path";
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
-import { detectStack } from "./detect/index.js";
+import { detectStack, detectWorkspaces } from "./detect/index.js";
 import { generateAll } from "./generate/index.js";
 import { formatStackSummary } from "./generate/common.js";
 import type { ToolId, ToolOutput } from "./types.js";
 import { runInit } from "./init.js";
+import { runDoctor, printDoctorResults } from "./doctor.js";
+import { relative } from "node:path";
 
 async function checkGitignore(dir: string, outputs: ToolOutput[]): Promise<string[]> {
   try {
@@ -28,7 +30,7 @@ async function checkGitignore(dir: string, outputs: ToolOutput[]): Promise<strin
   }
 }
 
-const VERSION = "0.7.0";
+const VERSION = "0.8.0";
 
 const program = new Command();
 
@@ -214,6 +216,86 @@ program
     for (const cat of ruleCategories) {
       console.log(`    ${pc.green("✓")} ${cat}`);
     }
+    console.log();
+  });
+
+program
+  .command("doctor")
+  .description("Analyze existing rule files and suggest improvements")
+  .option("-d, --dir <path>", "Project directory", ".")
+  .action(async (opts) => {
+    const dir = resolve(opts.dir);
+
+    console.log();
+    console.log(pc.bold("  onerules doctor") + pc.dim(` v${VERSION}`));
+    console.log();
+
+    const results = await runDoctor(dir);
+    printDoctorResults(results);
+  });
+
+program
+  .command("monorepo")
+  .description("Generate rules for all workspaces in a monorepo")
+  .option("-d, --dir <path>", "Monorepo root directory", ".")
+  .option("-f, --force", "Overwrite existing files")
+  .option("--strict", "Include strict rules")
+  .option("--minimal", "Only base anti-slop rules")
+  .action(async (opts) => {
+    const dir = resolve(opts.dir);
+
+    console.log();
+    console.log(pc.bold("  onerules monorepo") + pc.dim(` v${VERSION}`));
+    console.log();
+
+    const rootProfile = await detectStack(dir);
+    if (!rootProfile.monorepo) {
+      console.log(pc.yellow("  ⚠ No monorepo detected (no pnpm-workspace.yaml, workspaces field, turbo.json, or nx.json)."));
+      console.log(pc.dim("    Run `onerules` instead for single-project generation."));
+      console.log();
+      process.exit(1);
+    }
+
+    const workspaces = await detectWorkspaces(dir);
+    if (workspaces.length === 0) {
+      console.log(pc.yellow("  ⚠ Monorepo detected but no workspaces found with recognizable code."));
+      console.log();
+      process.exit(1);
+    }
+
+    console.log(`  ${pc.green("Found")} ${pc.bold(String(workspaces.length))} workspaces:`);
+    console.log();
+
+    const mode = opts.strict ? "strict" : opts.minimal ? "minimal" : "default";
+
+    // Generate for root
+    const { outputs: rootOutputs } = await generateAll(dir, rootProfile, { force: opts.force, mode: mode as any });
+    if (rootOutputs.length > 0) {
+      console.log(`  ${pc.bold("root/")}`);
+      for (const out of rootOutputs) {
+        console.log(`    ${pc.green("✓")} ${out.filePath}`);
+      }
+      console.log();
+    }
+
+    // Generate for each workspace
+    for (const ws of workspaces) {
+      const summary = formatStackSummary(ws.profile);
+      const relPath = relative(dir, ws.path);
+      const { outputs, skipped } = await generateAll(ws.path, ws.profile, { force: opts.force, mode: mode as any });
+
+      console.log(`  ${pc.bold(relPath + "/")} ${pc.dim(`(${summary})`)}`);
+      for (const out of outputs) {
+        console.log(`    ${pc.green("✓")} ${out.filePath}`);
+      }
+      for (const out of skipped) {
+        console.log(`    ${pc.yellow("–")} ${pc.dim(out.filePath)} ${pc.dim("(exists)")}`);
+      }
+      console.log();
+    }
+
+    const totalFiles = rootOutputs.length + workspaces.reduce((sum, ws) => sum, 0);
+    console.log(pc.dim(`  Done. Generated rules for ${workspaces.length} workspaces.`));
     console.log();
   });
 
