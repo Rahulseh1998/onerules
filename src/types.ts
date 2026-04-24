@@ -54,7 +54,16 @@ export type ToolId =
   | "roo"
   | "trae"
   | "kiro"
-  | "continue";
+  | "continue"
+  | "zed"
+  | "void"
+  | "goose"
+  | "openhands"
+  | "junie"
+  | "amazonq"
+  | "augment"
+  | "bolt"
+  | "warp";
 
 export interface ToolOutput {
   toolId: ToolId;

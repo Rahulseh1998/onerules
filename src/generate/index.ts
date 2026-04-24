@@ -15,6 +15,15 @@ import { generateRoo } from "./roo.js";
 import { generateTrae } from "./trae.js";
 import { generateKiro } from "./kiro.js";
 import { generateContinue } from "./continue.js";
+import { generateZed } from "./zed.js";
+import { generateVoid } from "./void.js";
+import { generateGoose } from "./goose.js";
+import { generateOpenhands } from "./openhands.js";
+import { generateJunie } from "./junie.js";
+import { generateAmazonQ } from "./amazonq.js";
+import { generateAugment } from "./augment.js";
+import { generateBolt } from "./bolt.js";
+import { generateWarp } from "./warp.js";
 
 const generators: Record<ToolId, (profile: StackProfile, customRules?: RuleSet, mode?: RuleMode) => ToolOutput> = {
   claude: generateClaude,
@@ -29,9 +38,22 @@ const generators: Record<ToolId, (profile: StackProfile, customRules?: RuleSet, 
   trae: generateTrae,
   kiro: generateKiro,
   continue: generateContinue,
+  zed: generateZed,
+  void: generateVoid,
+  goose: generateGoose,
+  openhands: generateOpenhands,
+  junie: generateJunie,
+  amazonq: generateAmazonQ,
+  augment: generateAugment,
+  bolt: generateBolt,
+  warp: generateWarp,
 };
 
-const ALL_TOOLS: ToolId[] = ["claude", "cursor", "copilot", "codex", "gemini", "windsurf", "cline", "aider", "roo", "trae", "kiro", "continue"];
+const ALL_TOOLS: ToolId[] = [
+  "claude", "cursor", "copilot", "codex", "gemini", "windsurf", "cline", "aider",
+  "roo", "trae", "kiro", "continue", "zed", "void", "goose", "openhands",
+  "junie", "amazonq", "augment", "bolt", "warp",
+];
 
 export interface MergedOutput {
   toolOutput: ToolOutput;

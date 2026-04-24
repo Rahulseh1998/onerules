@@ -2,7 +2,7 @@
   <h1 align="center">onerules</h1>
   <p align="center"><strong>Stop your AI from writing slop.</strong></p>
   <p align="center">
-    One command generates anti-slop coding rules for 12 AI tools.<br>
+    One command generates anti-slop coding rules for 21 AI tools.<br>
     Detects your stack, libraries, and tooling. Works offline. Under 2 seconds.
   </p>
 </p>
@@ -52,7 +52,7 @@ npm i -g @blackforge/onerules
 # Score your existing rules
 onerules doctor
 
-# Generate anti-slop rules for all 12 tools
+# Generate anti-slop rules for all 21 tools
 onerules
 
 # Want PROJECT-SPECIFIC rules? Use your existing AI:
@@ -130,7 +130,7 @@ onerules doesn't just detect your framework — it detects your **libraries** an
 
 Two Next.js projects with different libraries get different rules.
 
-## 12 AI Tools, One Command
+## 21 AI Tools, One Command
 
 | Tool | File Generated |
 |------|------|
@@ -146,6 +146,15 @@ Two Next.js projects with different libraries get different rules.
 | Trae | `.trae/rules/onerules.md` |
 | Kiro (AWS) | `.kiro/rules/onerules.md` |
 | Continue | `.continue/rules/onerules.md` |
+| Zed AI | `.rules` |
+| Void | `.voidrules` |
+| Goose (Block) | `.goosehints` |
+| OpenHands | `.openhands_instructions` |
+| JetBrains Junie | `.junie/guidelines.md` |
+| Amazon Q | `.amazonq/rules/onerules.md` |
+| Augment Code | `.augment-guidelines` |
+| Bolt.new | `.boltrules` |
+| Warp Terminal | `WARP.md` |
 
 ## Features
 
@@ -159,13 +168,13 @@ Two Next.js projects with different libraries get different rules.
 - **`--strict` mode** — extra aggressive rules (max function length, no default exports)
 - **`--minimal` mode** — core anti-slop only, skip framework/library details
 - **`.onerulesrc`** — custom rules that survive `onerules update`
-- **12 AI tools, 23 frameworks, 25 libraries, 6 languages**
+- **21 AI tools, 23 frameworks, 25 libraries, 6 languages**
 - **No LLM required** — deterministic, fast (<2s), works completely offline
 
 ## Commands
 
 ```bash
-onerules                         # Generate for all 12 tools
+onerules                         # Generate for all 21 tools
 onerules ai --copy               # Generate AI prompt for project-specific rules
 onerules doctor                  # Score existing rules 0-100
 onerules init                    # Interactive setup wizard

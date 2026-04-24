@@ -31,9 +31,9 @@ describe("E2E: Next.js project", () => {
     await rm(dir, { recursive: true, force: true });
   });
 
-  it("generate creates 12 files", () => {
+  it("generate creates 21 files", () => {
     const output = run("--force", dir);
-    expect(output).toContain("Generated 12 files");
+    expect(output).toContain("Generated 21 files");
     expect(output).toContain("CLAUDE.md");
     expect(output).toContain("Cursor");
   });
@@ -95,7 +95,7 @@ describe("E2E: Next.js project", () => {
 
   it("--force overwrites existing files", () => {
     const output = run("--force", dir);
-    expect(output).toContain("Generated 12 files");
+    expect(output).toContain("Generated 21 files");
   });
 
   it("ai command generates a prompt", () => {

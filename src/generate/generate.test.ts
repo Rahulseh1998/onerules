@@ -42,7 +42,7 @@ afterEach(async () => {
 describe("generateAll", () => {
   it("generates all 8 files for a Next.js project", async () => {
     const { outputs } = await generateAll(tempDir, nextjsProfile, { force: true });
-    expect(outputs).toHaveLength(12);
+    expect(outputs).toHaveLength(21);
 
     const fileNames = outputs.map((o) => o.filePath);
     expect(fileNames).toContain("CLAUDE.md");
@@ -84,18 +84,18 @@ describe("generateAll", () => {
     await generateAll(tempDir, nextjsProfile);
     const { outputs, skipped } = await generateAll(tempDir, nextjsProfile);
     expect(outputs).toHaveLength(0);
-    expect(skipped).toHaveLength(12);
+    expect(skipped).toHaveLength(21);
   });
 
   it("overwrites existing files when force is true", async () => {
     await generateAll(tempDir, nextjsProfile);
     const { outputs } = await generateAll(tempDir, nextjsProfile, { force: true });
-    expect(outputs).toHaveLength(12);
+    expect(outputs).toHaveLength(21);
   });
 
   it("dry-run does not write files", async () => {
     const { outputs } = await generateAll(tempDir, nextjsProfile, { dryRun: true, force: true });
-    expect(outputs).toHaveLength(12);
+    expect(outputs).toHaveLength(21);
 
     await expect(access(join(tempDir, "CLAUDE.md"))).rejects.toThrow();
   });
