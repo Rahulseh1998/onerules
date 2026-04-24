@@ -176,6 +176,14 @@ Here's a taste of what gets generated for a **Next.js + TypeScript** project:
   `type Shape = Circle | Square` over `abstract class Shape`.
 ```
 
+## Why This Works
+
+Generic rules like "follow best practices" and "write clean code" are useless — AI tools are already trained on those. They ignore them.
+
+onerules generates rules that target **specific AI failure modes**: the `AbstractFactoryProviderManager` class nobody asked for, the `useMemo` on a function that runs once, the `try/catch` around `a + b`.
+
+See the [full before vs after comparison](./docs/before-after.md) for side-by-side examples across Next.js, React, FastAPI, and testing.
+
 ## FAQ
 
 **Does this replace my existing CLAUDE.md?**
