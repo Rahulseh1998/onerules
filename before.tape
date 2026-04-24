@@ -1,19 +1,21 @@
 Output before.gif
 
 Set Shell "zsh"
-Set FontSize 13
-Set Width 880
-Set Height 560
+Set FontSize 14
+Set Width 920
+Set Height 700
 Set Theme "Catppuccin Mocha"
 Set Padding 16
-Set TypingSpeed 0ms
+Set TypingSpeed 30ms
 
-Sleep 500ms
+Sleep 300ms
 
-Type "echo '❌ WITHOUT onerules — AI generated this for: create a user API'"
+Type "cd /tmp/demo-saas && cat CLAUDE.md"
 Enter
-Sleep 1.5s
+Sleep 2s
 
-Type "cat /tmp/demo-comparison/slop.ts"
+Type "onerules doctor"
 Enter
-Sleep 8s
+Sleep 7s
+
+Sleep 3s
