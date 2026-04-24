@@ -18,7 +18,9 @@
 
 ---
 
-<!-- TODO: Hero GIF here -->
+<p align="center">
+  <img src="./demo.gif" alt="onerules demo" width="860">
+</p>
 
 ## The Problem
 
