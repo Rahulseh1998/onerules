@@ -1,15 +1,16 @@
 <p align="center">
   <h1 align="center">onerules</h1>
-  <p align="center"><strong>One command. Every AI tool. Perfect rules.</strong></p>
+  <p align="center"><strong>Stop your AI from writing slop.</strong></p>
   <p align="center">
-    Auto-detect your stack and generate optimized coding rules for 10 AI tools — in under 2 seconds.
+    One command generates anti-slop coding rules for 10 AI tools.<br>
+    Auto-detects your stack. Works offline. Under 2 seconds.
   </p>
 </p>
 
 <p align="center">
   <a href="https://www.npmjs.com/package/@blackforge/onerules"><img src="https://img.shields.io/npm/v/@blackforge/onerules.svg" alt="npm version"></a>
   <a href="https://www.npmjs.com/package/@blackforge/onerules"><img src="https://img.shields.io/npm/dm/@blackforge/onerules.svg" alt="npm downloads"></a>
-  <a href="https://github.com/onerules/onerules/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="license"></a>
+  <a href="https://github.com/Rahulseh1998/onerules/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="license"></a>
 </p>
 
 <p align="center">
@@ -24,22 +25,31 @@
 
 ## The Problem
 
-Every AI coding tool has its own rules file. If you use more than one tool, you're maintaining the same rules in multiple formats:
+AI coding tools generate slop: unnecessary abstractions, wrapper classes that wrap nothing, `useMemo` on everything, try/catch around code that can't throw, `AbstractFactoryProviderManager` classes, and 500-line files that should be 50.
 
-| Tool | File |
-|------|------|
-| Claude Code | `CLAUDE.md` |
-| Cursor | `.cursor/rules/*.mdc` |
-| GitHub Copilot | `.github/copilot-instructions.md` |
-| OpenAI Codex | `AGENTS.md` |
-| Gemini CLI | `GEMINI.md` |
-| Windsurf | `.windsurfrules` |
-| Cline | `.clinerules` |
-| Aider | `CONVENTIONS.md` |
-| Roo Code | `.roo/rules/*.md` |
-| Trae | `.trae/rules/*.md` |
+**onerules** generates rules that specifically target these failure modes — for every AI tool you use, tuned to your framework.
 
-**onerules** generates all of them from a single command.
+## What Makes This Different
+
+These aren't generic "follow best practices" rules. Every rule targets a **specific AI slop pattern**:
+
+```markdown
+# Instead of: "Avoid unnecessary abstractions"
+# You get:
+
+- DO NOT over-abstract. No AbstractFactoryProviderManager. No BaseServiceInterface.
+  If the class name needs 3+ words to describe what it does, it's doing too much
+  or too little.
+
+- DO NOT create interfaces/types for a single implementation. Interface `IUserService`
+  with one class `UserService` is pointless indirection.
+
+- A function that wraps another function without adding behavior is not an
+  abstraction — it's noise. Delete it.
+
+- DO NOT install `axios`. The Fetch API is built-in, cached by Next.js, and has
+  extended options. `axios` adds 14KB for nothing.
+```
 
 ## Quick Start
 
@@ -47,20 +57,20 @@ Every AI coding tool has its own rules file. If you use more than one tool, you'
 # Install globally (recommended)
 npm i -g @blackforge/onerules
 
-# Then run in any project
+# Run in any project
 onerules
 ```
 
-Or use directly without installing:
+Or without installing:
 
 ```bash
 npx --package=@blackforge/onerules onerules
 ```
 
-No API keys, no config. Works offline.
+No API keys. No config. Works offline.
 
 ```
-  onerules v0.2.0
+  onerules v0.3.0
 
   Detected: Next.js + TypeScript + Tailwind CSS + Prisma + pnpm
 
@@ -79,32 +89,39 @@ No API keys, no config. Works offline.
   Done in 1.2s
 ```
 
+## 10 AI Tools, One Command
+
+| Tool | File Generated |
+|------|------|
+| Claude Code | `CLAUDE.md` |
+| Cursor | `.cursor/rules/onerules.mdc` |
+| GitHub Copilot | `.github/copilot-instructions.md` |
+| OpenAI Codex | `AGENTS.md` |
+| Gemini CLI | `GEMINI.md` |
+| Windsurf | `.windsurfrules` |
+| Cline | `.clinerules` |
+| Aider | `CONVENTIONS.md` |
+| Roo Code | `.roo/rules/onerules.md` |
+| Trae | `.trae/rules/onerules.md` |
+
 ## Features
 
-- **Zero-config** — auto-detects your stack from package.json, pyproject.toml, go.mod, Cargo.toml, or Gemfile
+- **Anti-slop rules** — every rule targets a specific AI code generation failure mode, not generic advice
 - **10 AI tools** — generates the correct file format for each tool
-- **18 frameworks** — deep, opinionated rules for Next.js, React, Vue, Nuxt, SvelteKit, Angular, Astro, Remix, Express, Fastify, Hono, FastAPI, Django, Flask, Rails, Gin, Fiber, Axum
+- **18 frameworks** — deep rules for Next.js, React, Vue, Nuxt, SvelteKit, Angular, Astro, Remix, Express, Fastify, Hono, FastAPI, Django, Flask, Rails, Gin, Fiber, Axum
+- **Zero-config** — auto-detects stack from package.json, pyproject.toml, go.mod, Cargo.toml, or Gemfile
 - **No LLM required** — deterministic, fast (<2s), works completely offline
-- **Smart rules** — principle-based best practices, not 500-line rule dumps
 - **Safe by default** — skips existing files unless you use `--force`
 
 ## Supported Stacks
 
-### Languages
-TypeScript, JavaScript, Python, Go, Rust, Ruby
+**Languages:** TypeScript, JavaScript, Python, Go, Rust, Ruby
 
-### Frameworks (with deep rules)
-Next.js, React, Vue, Nuxt, SvelteKit, Angular, Astro, Remix, Express, Fastify, Hono, FastAPI, Django, Flask, Rails, Gin, Fiber, Axum
+**Frameworks (with anti-slop rules):** Next.js, React, Vue, Nuxt, SvelteKit, Angular, Astro, Remix, Express, Fastify, Hono, FastAPI, Django, Flask, Rails, Gin, Fiber, Axum
 
-### Also detected
-Svelte, Actix, Tauri, Electron, React Native
-
-### Tooling
-pnpm, yarn, bun, npm, uv, poetry, pip, cargo, bundler | Vitest, Jest, Playwright, Cypress, pytest, RSpec | ESLint, Biome, Ruff, RuboCop | Prettier, dprint, Black
+**Tooling:** pnpm, yarn, bun, npm, uv, poetry, pip, cargo, bundler | Vitest, Jest, Playwright, Cypress, pytest, RSpec | ESLint, Biome, Ruff, RuboCop | Prettier, dprint, Black
 
 ## Commands
-
-### Generate rules (default)
 
 ```bash
 onerules                         # Generate for all 10 tools
@@ -112,34 +129,35 @@ onerules -t claude,cursor        # Generate for specific tools only
 onerules --force                 # Overwrite existing files
 onerules --dry-run               # Preview without writing
 onerules -d ./my-project         # Specify project directory
-```
-
-### Update existing rules
-
-```bash
-onerules update                  # Re-detect stack and regenerate all files
-```
-
-### Preview diff
-
-```bash
+onerules update                  # Re-detect and regenerate all files
 onerules diff                    # Show what would be generated
 ```
 
-## What Gets Generated
+## Example Rules
 
-onerules generates rules covering:
+Here's a taste of what gets generated for a **Next.js + TypeScript** project:
 
-- **Principles** — think before coding, simplicity first, surgical changes
-- **Coding patterns** — language-specific best practices (TypeScript strict mode, Python type hints, Go error handling, Rust ownership patterns)
-- **Framework patterns** — framework-specific rules (Server Components for Next.js, Composition API for Vue, Pydantic models for FastAPI, etc.)
-- **Architecture** — project structure, separation of concerns, routing patterns
-- **Do Not** — common mistakes to avoid per language and framework
-- **Testing** — test framework conventions and best practices
-- **Security** — OWASP-aligned security practices
-- **Style & Tooling** — package manager, linter, formatter conventions
+```markdown
+## Do Not
 
-Rules are principle-based and concise — the format proven by projects with 80k+ stars.
+- DO NOT add `'use client'` to a component just because it receives props
+  or renders conditionally. Server Components can do both.
+- DO NOT use `useEffect(() => { fetch('/api/...') }, [])` for data loading.
+  Use a Server Component with async/await.
+- DO NOT create API routes for operations that should be Server Actions.
+  If a client component needs to mutate data, use a server action.
+- DO NOT install `axios`. The Fetch API is built-in, cached by Next.js,
+  and has extended options.
+
+## Coding Patterns
+
+- Inline simple logic. A 3-line helper called once is worse than 3 lines
+  at the call site.
+- Three similar lines are better than a premature abstraction. Do not DRY
+  code until a pattern has repeated 3+ times with identical structure.
+- Use discriminated unions over class hierarchies.
+  `type Shape = Circle | Square` over `abstract class Shape`.
+```
 
 ## FAQ
 
@@ -147,23 +165,23 @@ Rules are principle-based and concise — the format proven by projects with 80k
 No. By default, onerules skips files that already exist. Use `--force` to overwrite.
 
 **Does this call any AI APIs?**
-No. onerules is fully deterministic and works offline. No API keys needed.
+No. Fully deterministic. Works offline. No API keys needed.
 
 **Can I customize the generated rules?**
 Yes. Edit the generated files after running onerules. They're plain markdown.
 
-**How do I add rules for my framework?**
-Open a PR adding a fragment in `src/templates/fragments/`. See [CONTRIBUTING.md](./CONTRIBUTING.md).
+**How is this different from awesome-cursorrules or Karpathy's CLAUDE.md?**
+Those are single files for one tool. onerules generates rules for 10 tools simultaneously, tuned to your specific framework, with anti-slop rules that target AI failure modes specifically.
 
 ## Contributing
 
-Contributions are welcome! The easiest ways to contribute:
+We welcome contributions! The easiest ways:
 
-1. **Add a framework** — create a new file in `src/templates/fragments/` and register it in the index
-2. **Add a tool** — create a new generator in `src/generate/` for an AI tool we don't support yet
-3. **Improve rules** — submit PRs improving the quality of generated rules for any framework
+1. **Improve rules** — make the anti-slop rules sharper for any framework
+2. **Add a framework** — create a fragment in `src/templates/fragments/`
+3. **Add a tool** — create a generator in `src/generate/`
 
-See [CONTRIBUTING.md](./CONTRIBUTING.md) for the full guide.
+See [CONTRIBUTING.md](./CONTRIBUTING.md) for details.
 
 ## License
 
