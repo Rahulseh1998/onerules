@@ -85,6 +85,43 @@ program
   });
 
 program
+  .command("update")
+  .description("Re-detect stack and regenerate all rules files (overwrites existing)")
+  .option("-d, --dir <path>", "Project directory", ".")
+  .option("-t, --tools <tools>", "Comma-separated list of tools")
+  .action(async (opts) => {
+    const dir = resolve(opts.dir);
+
+    console.log();
+    console.log(pc.bold("  onerules update") + pc.dim(` v${VERSION}`));
+    console.log();
+
+    const profile = await detectStack(dir);
+
+    if (profile.languages.length === 0) {
+      console.log(pc.yellow("  ⚠ No recognized project files found."));
+      console.log();
+      process.exit(1);
+    }
+
+    const summary = formatStackSummary(profile);
+    console.log(`  ${pc.green("Detected:")} ${pc.bold(summary)}`);
+    console.log();
+
+    const tools: ToolId[] | undefined = opts.tools
+      ? (opts.tools as string).split(",").map((t: string) => t.trim() as ToolId)
+      : undefined;
+
+    const { outputs } = await generateAll(dir, profile, { tools, force: true });
+
+    console.log(`  ${pc.green(`Updated ${outputs.length} file${outputs.length > 1 ? "s" : ""}:`)}`);
+    for (const out of outputs) {
+      console.log(`    ${pc.green("✓")} ${pc.bold(padRight(out.filePath, 40))} ${pc.dim(`(${out.toolName})`)}`);
+    }
+    console.log();
+  });
+
+program
   .command("diff")
   .description("Preview what would be generated without writing files")
   .option("-d, --dir <path>", "Project directory", ".")

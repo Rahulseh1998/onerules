@@ -14,6 +14,9 @@ import { getAxumRules } from "./axum.js";
 import { getAstroRules } from "./astro.js";
 import { getRemixRules } from "./remix.js";
 import { getFlaskRules } from "./flask.js";
+import { getAngularRules } from "./angular.js";
+import { getFastifyRules } from "./fastify.js";
+import { getFiberRules } from "./fiber.js";
 
 const frameworkRules: Partial<Record<Framework, () => RuleSet>> = {
   nextjs: getNextjsRules,
@@ -21,15 +24,18 @@ const frameworkRules: Partial<Record<Framework, () => RuleSet>> = {
   vue: getVueRules,
   nuxt: getNuxtRules,
   sveltekit: getSveltekitRules,
+  angular: getAngularRules,
   astro: getAstroRules,
   remix: getRemixRules,
   express: getExpressRules,
+  fastify: getFastifyRules,
   hono: getHonoRules,
   fastapi: getFastapiRules,
   django: getDjangoRules,
   flask: getFlaskRules,
   rails: getRailsRules,
   gin: getGinRules,
+  fiber: getFiberRules,
   axum: getAxumRules,
 };
 
