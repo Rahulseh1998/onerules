@@ -30,7 +30,7 @@ async function checkGitignore(dir: string, outputs: ToolOutput[]): Promise<strin
   }
 }
 
-const VERSION = "0.8.2";
+const VERSION = "0.9.0";
 
 const program = new Command();
 
@@ -53,6 +53,7 @@ program
   .option("-d, --dir <path>", "Project directory", ".")
   .option("-t, --tools <tools>", "Comma-separated list of tools (claude,cursor,copilot,codex,gemini,windsurf,cline,aider,roo,trae)")
   .option("-f, --force", "Overwrite existing files")
+  .option("-m, --merge", "Smart merge: add missing rules to existing files without overwriting")
   .option("--dry-run", "Preview what would be generated without writing files")
   .option("--strict", "Add extra aggressive rules (max function length, no default exports, etc.)")
   .option("--minimal", "Generate only base anti-slop rules, skip framework/library-specific rules")
@@ -84,15 +85,24 @@ program
 
     // Generate
     const mode = opts.strict ? "strict" : opts.minimal ? "minimal" : "default";
-    const { outputs, skipped, hasCustomRules } = await generateAll(dir, profile, {
+    const { outputs, skipped, merged, hasCustomRules } = await generateAll(dir, profile, {
       tools,
       force: opts.force,
+      merge: opts.merge,
       dryRun: opts.dryRun,
       mode: mode as any,
     });
 
     if (hasCustomRules) {
       console.log(`  ${pc.cyan("Custom:")} ${pc.dim(".onerulesrc loaded")}`);
+      console.log();
+    }
+
+    if (merged.length > 0) {
+      console.log(`  ${pc.green(`Merged into ${merged.length} existing file${merged.length > 1 ? "s" : ""}:`)}`);
+      for (const m of merged) {
+        console.log(`    ${pc.green("+")} ${pc.bold(padRight(m.toolOutput.filePath, 40))} ${pc.green(`${m.addedCount} rules added`)} ${pc.dim(`(${m.skippedCount} already present)`)}`);
+      }
       console.log();
     }
 

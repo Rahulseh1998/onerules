@@ -89,5 +89,6 @@ export interface GenerateOptions {
   pack?: string;
   dryRun?: boolean;
   force?: boolean;
+  merge?: boolean;
   mode?: RuleMode;
 }
