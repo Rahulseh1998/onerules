@@ -71,7 +71,7 @@ That's it. No install, no API keys, no config. Works offline.
 
 - **Zero-config** — auto-detects your stack from package.json, pyproject.toml, go.mod, Cargo.toml, or Gemfile
 - **10 AI tools** — generates the correct file format for each tool
-- **15 frameworks** — deep, opinionated rules for Next.js, React, Vue, Nuxt, SvelteKit, Astro, Remix, Express, Hono, FastAPI, Django, Flask, Rails, Gin, Axum
+- **18 frameworks** — deep, opinionated rules for Next.js, React, Vue, Nuxt, SvelteKit, Angular, Astro, Remix, Express, Fastify, Hono, FastAPI, Django, Flask, Rails, Gin, Fiber, Axum
 - **No LLM required** — deterministic, fast (<2s), works completely offline
 - **Smart rules** — principle-based best practices, not 500-line rule dumps
 - **Safe by default** — skips existing files unless you use `--force`
@@ -82,10 +82,10 @@ That's it. No install, no API keys, no config. Works offline.
 TypeScript, JavaScript, Python, Go, Rust, Ruby
 
 ### Frameworks (with deep rules)
-Next.js, React, Vue, Nuxt, SvelteKit, Astro, Remix, Express, Hono, FastAPI, Django, Flask, Rails, Gin, Axum
+Next.js, React, Vue, Nuxt, SvelteKit, Angular, Astro, Remix, Express, Fastify, Hono, FastAPI, Django, Flask, Rails, Gin, Fiber, Axum
 
 ### Also detected
-Angular, Fastify, Fiber, Actix, Tauri, Electron, React Native
+Svelte, Actix, Tauri, Electron, React Native
 
 ### Tooling
 pnpm, yarn, bun, npm, uv, poetry, pip, cargo, bundler | Vitest, Jest, Playwright, Cypress, pytest, RSpec | ESLint, Biome, Ruff, RuboCop | Prettier, dprint, Black
@@ -100,6 +100,12 @@ npx onerules -t claude,cursor    # Generate for specific tools only
 npx onerules --force             # Overwrite existing files
 npx onerules --dry-run           # Preview without writing
 npx onerules -d ./my-project     # Specify project directory
+```
+
+### Update existing rules
+
+```bash
+npx onerules update              # Re-detect stack and regenerate all files
 ```
 
 ### Preview diff
