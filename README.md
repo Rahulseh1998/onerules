@@ -14,7 +14,7 @@
 </p>
 
 <p align="center">
-  <a href="./docs/README.zh-CN.md">简体中文</a>
+  <a href="https://rahulseh1998.github.io/onerules/playground/">Try the Playground</a> · <a href="./docs/README.zh-CN.md">简体中文</a>
 </p>
 
 ---
