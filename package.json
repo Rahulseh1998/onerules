@@ -1,6 +1,6 @@
 {
   "name": "@blackforge/onerules",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "One command. Every AI tool. Perfect rules.",
   "type": "module",
   "bin": {
@@ -41,7 +41,6 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "@clack/prompts": "^1.2.0",
     "commander": "^13.1.0",
     "picocolors": "^1.1.1"
   },

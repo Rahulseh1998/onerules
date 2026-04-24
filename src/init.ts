@@ -1,89 +1,96 @@
-import * as p from "@clack/prompts";
 import pc from "picocolors";
 import { resolve } from "node:path";
+import { createInterface } from "node:readline";
 import { detectStack } from "./detect/index.js";
 import { generateAll } from "./generate/index.js";
 import { formatStackSummary } from "./generate/common.js";
 import type { ToolId } from "./types.js";
 
-const ALL_TOOLS: { value: ToolId; label: string; hint: string }[] = [
-  { value: "claude", label: "Claude Code", hint: "CLAUDE.md" },
-  { value: "cursor", label: "Cursor", hint: ".cursor/rules/onerules.mdc" },
-  { value: "copilot", label: "GitHub Copilot", hint: ".github/copilot-instructions.md" },
-  { value: "codex", label: "OpenAI Codex", hint: "AGENTS.md" },
-  { value: "gemini", label: "Gemini CLI", hint: "GEMINI.md" },
-  { value: "windsurf", label: "Windsurf", hint: ".windsurfrules" },
-  { value: "cline", label: "Cline", hint: ".clinerules" },
-  { value: "aider", label: "Aider", hint: "CONVENTIONS.md" },
-  { value: "roo", label: "Roo Code", hint: ".roo/rules/onerules.md" },
-  { value: "trae", label: "Trae", hint: ".trae/rules/onerules.md" },
-  { value: "kiro", label: "Kiro (AWS)", hint: ".kiro/rules/onerules.md" },
-  { value: "continue", label: "Continue", hint: ".continue/rules/onerules.md" },
+const ALL_TOOLS: { id: ToolId; name: string }[] = [
+  { id: "claude", name: "Claude Code" },
+  { id: "cursor", name: "Cursor" },
+  { id: "copilot", name: "GitHub Copilot" },
+  { id: "codex", name: "OpenAI Codex" },
+  { id: "gemini", name: "Gemini CLI" },
+  { id: "windsurf", name: "Windsurf" },
+  { id: "cline", name: "Cline" },
+  { id: "aider", name: "Aider" },
+  { id: "roo", name: "Roo Code" },
+  { id: "trae", name: "Trae" },
+  { id: "kiro", name: "Kiro (AWS)" },
+  { id: "continue", name: "Continue" },
 ];
 
-export async function runInit(dir: string) {
-  p.intro(pc.bold("onerules init"));
+function ask(question: string): Promise<string> {
+  const rl = createInterface({ input: process.stdin, output: process.stdout });
+  return new Promise((resolve) => {
+    rl.question(question, (answer) => {
+      rl.close();
+      resolve(answer.trim());
+    });
+  });
+}
 
-  const spinner = p.spinner();
-  spinner.start("Scanning project...");
+export async function runInit(dir: string) {
+  console.log();
+  console.log(pc.bold("  onerules init"));
+  console.log();
+
   const profile = await detectStack(resolve(dir));
-  spinner.stop("Project scanned");
 
   if (profile.languages.length === 0) {
-    p.cancel("No recognized project files found. Run this in a project directory.");
+    console.log(pc.yellow("  ⚠ No recognized project files found. Run this in a project directory."));
+    console.log();
     process.exit(1);
   }
 
   const summary = formatStackSummary(profile);
-  p.note(
-    [
-      `${pc.bold("Stack:")}      ${summary}`,
-      `${pc.bold("Languages:")}  ${profile.languages.join(", ")}`,
-      `${pc.bold("Framework:")}  ${profile.framework || "none"}`,
-      `${pc.bold("Libraries:")}  ${profile.libraries.length > 0 ? profile.libraries.join(", ") : "none"}`,
-      `${pc.bold("Tooling:")}    ${[profile.packageManager, profile.testFramework, profile.linter, profile.formatter].filter(Boolean).join(", ")}`,
-    ].join("\n"),
-    "Detected",
-  );
+  console.log(`  ${pc.green("Detected:")} ${pc.bold(summary)}`);
+  console.log(`  ${pc.dim("Languages:")}  ${profile.languages.join(", ")}`);
+  console.log(`  ${pc.dim("Framework:")}  ${profile.framework || "none"}`);
+  console.log(`  ${pc.dim("Libraries:")}  ${profile.libraries.join(", ") || "none"}`);
+  console.log(`  ${pc.dim("Tooling:")}    ${[profile.packageManager, profile.testFramework, profile.linter, profile.formatter].filter(Boolean).join(", ")}`);
+  console.log();
 
-  const tools = await p.multiselect({
-    message: "Which AI tools do you use?",
-    options: ALL_TOOLS,
-    initialValues: ["claude", "cursor", "copilot"] as ToolId[],
-    required: true,
-  });
+  console.log("  Available tools:");
+  for (let i = 0; i < ALL_TOOLS.length; i++) {
+    console.log(`    ${pc.dim(`${i + 1}.`)} ${ALL_TOOLS[i].name}`);
+  }
+  console.log();
 
-  if (p.isCancel(tools)) {
-    p.cancel("Setup cancelled.");
-    process.exit(0);
+  const answer = await ask(`  Which tools? ${pc.dim("(enter for all, or comma-separated numbers e.g. 1,2,3)")}: `);
+
+  let selectedTools: ToolId[];
+  if (!answer || answer.toLowerCase() === "all") {
+    selectedTools = ALL_TOOLS.map((t) => t.id);
+  } else {
+    const indices = answer.split(",").map((s) => parseInt(s.trim()) - 1).filter((i) => i >= 0 && i < ALL_TOOLS.length);
+    selectedTools = indices.length > 0 ? indices.map((i) => ALL_TOOLS[i].id) : ALL_TOOLS.map((t) => t.id);
   }
 
-  const overwrite = await p.confirm({
-    message: "Overwrite existing rule files?",
-    initialValue: false,
-  });
+  const forceAnswer = await ask(`  Overwrite existing files? ${pc.dim("(y/N)")}: `);
+  const force = forceAnswer.toLowerCase() === "y" || forceAnswer.toLowerCase() === "yes";
 
-  if (p.isCancel(overwrite)) {
-    p.cancel("Setup cancelled.");
-    process.exit(0);
-  }
+  console.log();
 
-  spinner.start("Generating rules...");
   const { outputs, skipped } = await generateAll(resolve(dir), profile, {
-    tools: tools as ToolId[],
-    force: overwrite as boolean,
+    tools: selectedTools,
+    force,
   });
-  spinner.stop("Rules generated");
 
   if (outputs.length > 0) {
-    const fileList = outputs.map((o) => `${pc.green("✓")} ${o.filePath} ${pc.dim(`(${o.toolName})`)}`).join("\n");
-    p.note(fileList, `Generated ${outputs.length} files`);
+    console.log(`  ${pc.green(`Generated ${outputs.length} files:`)}`);
+    for (const out of outputs) {
+      console.log(`    ${pc.green("✓")} ${out.filePath} ${pc.dim(`(${out.toolName})`)}`);
+    }
   }
 
   if (skipped.length > 0) {
-    const skipList = skipped.map((o) => `${pc.yellow("–")} ${o.filePath}`).join("\n");
-    p.note(skipList, `Skipped ${skipped.length} existing files`);
+    console.log();
+    console.log(`  ${pc.yellow(`Skipped ${skipped.length} existing files`)} ${pc.dim("(use --force to overwrite)")}`);
   }
 
-  p.outro("Done! Your AI tools will now follow these rules.");
+  console.log();
+  console.log(pc.dim("  Done! Your AI tools will now follow these rules."));
+  console.log();
 }
