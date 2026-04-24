@@ -1,6 +1,6 @@
-# Show HN: OneRules – Stop your AI from writing slop (anti-slop rules for 12 AI tools)
+# Show HN: OneRules – Stop your AI from writing slop (anti-slop rules for 21 AI tools)
 
-**Title:** Show HN: OneRules – Stop your AI from writing slop (anti-slop rules for 12 AI tools)
+**Title:** Show HN: OneRules – Stop your AI from writing slop (anti-slop rules for 21 AI tools)
 
 **URL:** https://github.com/Rahulseh1998/onerules
 
@@ -16,7 +16,7 @@ onerules does two things:
 
 1. `onerules doctor` — scores your existing rules 0-100. It detects 12 weak patterns like "follow best practices", "write clean code", "add proper error handling" and explains WHY AI ignores them.
 
-2. `onerules` — generates anti-slop rules for all 12 AI tools simultaneously, tuned to your detected stack. It doesn't just detect your framework — it detects your libraries (Prisma, Zod, Tailwind, Stripe, etc.) and generates rules specific to each one.
+2. `onerules` — generates anti-slop rules for all 21 AI tools simultaneously, tuned to your detected stack. It doesn't just detect your framework — it detects your libraries (Prisma, Zod, Tailwind, Stripe, etc.) and generates rules specific to each one.
 
 Example of what it generates vs what most people write:
 

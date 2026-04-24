@@ -2,7 +2,7 @@
 
 ## r/programming
 
-**Title:** I built a CLI that scores your AI coding rules 0-100 and generates anti-slop replacements for 12 AI tools
+**Title:** I built a CLI that scores your AI coding rules 0-100 and generates anti-slop replacements for 21 AI tools
 
 **Body:**
 Every AI coding tool has its own rules file (CLAUDE.md, .cursorrules, copilot-instructions.md, etc.). Most either don't exist or say "follow best practices" — which AI completely ignores.
@@ -10,7 +10,7 @@ Every AI coding tool has its own rules file (CLAUDE.md, .cursorrules, copilot-in
 I built `onerules` to fix this:
 
 - `onerules doctor` — scores your existing rules 0-100 and tells you what's weak
-- `onerules` — generates anti-slop rules for 12 tools at once, tuned to your stack and libraries
+- `onerules` — generates anti-slop rules for 21 tools at once, tuned to your stack and libraries
 - `onerules ai --copy` — generates a prompt for project-specific rules via your existing AI
 
 It detects your framework (23 supported), your libraries (Prisma, Zod, Tailwind, Stripe — 25 total), and generates rules that target specific AI failure modes. Not "write clean code" but "DO NOT create AbstractFactoryProviderManager. DO NOT add try/catch around code that cannot throw."

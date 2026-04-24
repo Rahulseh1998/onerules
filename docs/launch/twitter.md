@@ -44,7 +44,7 @@ If you use Zustand:
 
 "DO NOT put server data in Zustand. Use React Query for server state."
 
-4/ Works for 12 AI tools simultaneously:
+4/ Works for 21 AI tools simultaneously:
 Claude Code, Cursor, Copilot, Codex, Gemini CLI, Windsurf, Cline, Aider, Roo Code, Trae, Kiro, Continue
 
 One command. All tools. 2 seconds. Offline. No API keys.

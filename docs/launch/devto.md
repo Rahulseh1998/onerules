@@ -52,7 +52,7 @@ Generic rules don't prevent any of this. You need rules that target these specif
 [onerules](https://github.com/Rahulseh1998/onerules) is a CLI that:
 
 1. **Scores your existing rules** (`onerules doctor`) — 0-100 with specific suggestions
-2. **Generates anti-slop rules** (`onerules`) — for 12 AI tools simultaneously
+2. **Generates anti-slop rules** (`onerules`) — for 21 AI tools simultaneously
 3. **Detects your stack** — framework, libraries, tooling — and generates rules specific to each
 
 ### The Doctor
@@ -134,7 +134,7 @@ Or try the [web playground](https://rahulseh1998.github.io/onerules/playground/)
 
 ## Stats
 
-- 12 AI tools, 23 frameworks, 25 libraries, 6 languages
+- 21 AI tools, 23 frameworks, 25 libraries, 6 languages
 - Deterministic (no LLM), offline, <2 seconds
 - 70 tests, CI on Node 18/20/22
 - 2 runtime dependencies
