@@ -42,13 +42,23 @@ Every AI coding tool has its own rules file. If you use more than one tool, you'
 ## Quick Start
 
 ```bash
-npx @blackforge/onerules
+# Install globally (recommended)
+npm i -g @blackforge/onerules
+
+# Then run in any project
+onerules
 ```
 
-That's it. No install, no API keys, no config. Works offline.
+Or use directly without installing:
+
+```bash
+npx --package=@blackforge/onerules onerules
+```
+
+No API keys, no config. Works offline.
 
 ```
-  onerules v0.1.0
+  onerules v0.2.0
 
   Detected: Next.js + TypeScript + Tailwind CSS + Prisma + pnpm
 
@@ -95,23 +105,23 @@ pnpm, yarn, bun, npm, uv, poetry, pip, cargo, bundler | Vitest, Jest, Playwright
 ### Generate rules (default)
 
 ```bash
-npx @blackforge/onerules                     # Generate for all 10 tools
-npx @blackforge/onerules -t claude,cursor    # Generate for specific tools only
-npx @blackforge/onerules --force             # Overwrite existing files
-npx @blackforge/onerules --dry-run           # Preview without writing
-npx @blackforge/onerules -d ./my-project     # Specify project directory
+onerules                         # Generate for all 10 tools
+onerules -t claude,cursor        # Generate for specific tools only
+onerules --force                 # Overwrite existing files
+onerules --dry-run               # Preview without writing
+onerules -d ./my-project         # Specify project directory
 ```
 
 ### Update existing rules
 
 ```bash
-npx @blackforge/onerules update              # Re-detect stack and regenerate all files
+onerules update                  # Re-detect stack and regenerate all files
 ```
 
 ### Preview diff
 
 ```bash
-npx @blackforge/onerules diff                # Show what would be generated
+onerules diff                    # Show what would be generated
 ```
 
 ## What Gets Generated

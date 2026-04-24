@@ -40,13 +40,17 @@
 ## 快速开始
 
 ```bash
-npx @blackforge/onerules
+# 全局安装（推荐）
+npm i -g @blackforge/onerules
+
+# 在任何项目中运行
+onerules
 ```
 
-就这样。无需安装，无需 API 密钥，无需配置。完全离线运行。
+无需 API 密钥，无需配置。完全离线运行。
 
 ```
-  onerules v0.1.0
+  onerules v0.2.0
 
   Detected: Next.js + TypeScript + Tailwind CSS + Prisma + pnpm
 
@@ -69,7 +73,7 @@ npx @blackforge/onerules
 
 - **零配置** — 自动从 package.json、pyproject.toml、go.mod、Cargo.toml 或 Gemfile 检测技术栈
 - **10 个 AI 工具** — 为每个工具生成正确的文件格式
-- **15 个框架** — 为 Next.js、React、Vue、Nuxt、SvelteKit、Astro、Remix、Express、Hono、FastAPI、Django、Flask、Rails、Gin、Axum 提供深度规则
+- **18 个框架** — 为 Next.js、React、Vue、Nuxt、SvelteKit、Angular、Astro、Remix、Express、Fastify、Hono、FastAPI、Django、Flask、Rails、Gin、Fiber、Axum 提供深度规则
 - **无需 LLM** — 确定性生成，快速（<2秒），完全离线
 - **智能规则** — 基于原则的最佳实践，不是 500 行的规则堆砌
 - **安全默认** — 默认跳过已存在的文件
@@ -80,7 +84,7 @@ npx @blackforge/onerules
 TypeScript, JavaScript, Python, Go, Rust, Ruby
 
 ### 框架（深度规则）
-Next.js, React, Vue, Nuxt, SvelteKit, Astro, Remix, Express, Hono, FastAPI, Django, Flask, Rails, Gin, Axum
+Next.js, React, Vue, Nuxt, SvelteKit, Angular, Astro, Remix, Express, Fastify, Hono, FastAPI, Django, Flask, Rails, Gin, Fiber, Axum
 
 ### 工具链
 pnpm, yarn, bun, npm, uv, poetry, pip, cargo, bundler | Vitest, Jest, Playwright, Cypress, pytest, RSpec | ESLint, Biome, Ruff, RuboCop | Prettier, dprint, Black
