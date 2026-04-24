@@ -55,11 +55,28 @@ onerules doctor
 # Generate anti-slop rules for all 12 tools
 onerules
 
-# Or use the interactive wizard
-onerules init
+# Want PROJECT-SPECIFIC rules? Use your existing AI:
+onerules ai --copy    # copies a prompt → paste into Claude/Cursor/ChatGPT
 ```
 
 No API keys. No config. Works offline.
+
+## Two Levels of Rules
+
+**Level 1: `onerules`** — Instant, offline, deterministic. Generates anti-slop rules based on your detected stack (framework + libraries + tooling). Good for any project using that stack.
+
+**Level 2: `onerules ai`** — Generates a prompt that you feed to your AI tool (Claude Code, Cursor, ChatGPT). The AI — which already has your codebase in context — produces rules specific to YOUR project: your file structure, your architecture patterns, your domain conventions.
+
+```bash
+onerules ai --copy     # Copy prompt to clipboard
+onerules ai -o prompt.md  # Save to file
+onerules ai            # Print to stdout (pipe to your tool)
+```
+
+The AI generates rules like:
+- *"The `src/engine/` directory uses the Strategy pattern — new strategies must implement `IStrategy` in `src/engine/types.ts`"*
+- *"All monetary values use `decimal.js`. DO NOT use floating point for money."*
+- *"API routes in `src/routes/` follow `{resource}.routes.ts` naming — don't create `Controller` classes"*
 
 ## What Makes This Different
 
@@ -149,6 +166,7 @@ Two Next.js projects with different libraries get different rules.
 
 ```bash
 onerules                         # Generate for all 12 tools
+onerules ai --copy               # Generate AI prompt for project-specific rules
 onerules doctor                  # Score existing rules 0-100
 onerules init                    # Interactive setup wizard
 onerules inspect                 # Show detected stack + rule categories

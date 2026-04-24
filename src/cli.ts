@@ -9,6 +9,7 @@ import { formatStackSummary } from "./generate/common.js";
 import type { ToolId, ToolOutput } from "./types.js";
 import { runInit } from "./init.js";
 import { runDoctor, printDoctorResults } from "./doctor.js";
+import { generateAIPrompt } from "./ai/prompt.js";
 import { relative } from "node:path";
 
 async function checkGitignore(dir: string, outputs: ToolOutput[]): Promise<string[]> {
@@ -30,7 +31,7 @@ async function checkGitignore(dir: string, outputs: ToolOutput[]): Promise<strin
   }
 }
 
-const VERSION = "0.9.1";
+const VERSION = "1.0.0";
 
 const program = new Command();
 
@@ -45,6 +46,56 @@ program
   .option("-d, --dir <path>", "Project directory", ".")
   .action(async (opts) => {
     await runInit(opts.dir);
+  });
+
+program
+  .command("ai")
+  .description("Generate a prompt for your AI tool to create project-specific rules")
+  .option("-d, --dir <path>", "Project directory", ".")
+  .option("--copy", "Copy prompt to clipboard")
+  .option("-o, --output <file>", "Write prompt to a file")
+  .action(async (opts) => {
+    const dir = resolve(opts.dir);
+
+    const profile = await detectStack(dir);
+    if (profile.languages.length === 0) {
+      console.error(pc.yellow("  ⚠ No recognized project files found."));
+      process.exit(1);
+    }
+
+    const prompt = await generateAIPrompt(dir, profile);
+
+    if (opts.output) {
+      const { writeFile: wf } = await import("node:fs/promises");
+      await wf(resolve(opts.output), prompt, "utf-8");
+      console.log();
+      console.log(`  ${pc.green("✓")} Prompt written to ${pc.bold(opts.output)}`);
+      console.log(pc.dim(`  Feed this to your AI tool to generate project-specific rules.`));
+      console.log();
+      return;
+    }
+
+    if (opts.copy) {
+      try {
+        const { execSync } = await import("node:child_process");
+        execSync("pbcopy", { input: prompt });
+        console.log();
+        console.log(`  ${pc.green("✓")} Prompt copied to clipboard (${Math.ceil(prompt.length / 4)} tokens)`);
+        console.log();
+        console.log(`  ${pc.bold("Next steps:")}`);
+        console.log(`    1. Open Claude Code, Cursor, or ChatGPT`);
+        console.log(`    2. Paste the prompt`);
+        console.log(`    3. Review the generated rules`);
+        console.log(`    4. Save to CLAUDE.md (or your tool's rules file)`);
+        console.log();
+        return;
+      } catch {
+        console.error(pc.yellow("  ⚠ Clipboard not available. Printing to stdout instead."));
+      }
+    }
+
+    // Default: print to stdout for piping
+    process.stdout.write(prompt);
   });
 
 program
