@@ -1,0 +1,12 @@
+README.zh-CN.md
+src/
+*.tape
+*.gif
+docs/
+.github/
+CONTRIBUTING.md
+CHANGELOG.md
+CLAUDE.md
+vitest.config.ts
+tsconfig.json
+tsup.config.ts

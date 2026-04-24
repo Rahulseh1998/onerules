@@ -1,6 +1,6 @@
 {
   "name": "@blackforge/onerules",
-  "version": "0.8.1",
+  "version": "0.8.2",
   "description": "One command. Every AI tool. Perfect rules.",
   "type": "module",
   "bin": {
@@ -8,7 +8,8 @@
   },
   "files": [
     "dist",
-    "packs"
+    "packs",
+    "README.md"
   ],
   "scripts": {
     "build": "tsup",
