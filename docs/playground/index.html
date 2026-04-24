@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>onerules playground — Stop your AI from writing slop</title>
+<meta name="description" content="Paste your package.json and instantly see the anti-slop rules onerules would generate for your project.">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #0d1117; color: #e6edf3; min-height: 100vh; }
+  .container { max-width: 1100px; margin: 0 auto; padding: 2rem 1.5rem; }
+  h1 { font-size: 2rem; margin-bottom: 0.5rem; }
+  h1 span { color: #f97316; }
+  .subtitle { color: #8b949e; margin-bottom: 2rem; font-size: 1.1rem; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+  @media (max-width: 768px) { .grid { grid-template-columns: 1fr; } }
+  .panel { background: #161b22; border: 1px solid #30363d; border-radius: 8px; overflow: hidden; }
+  .panel-header { padding: 0.75rem 1rem; background: #1c2128; border-bottom: 1px solid #30363d; font-weight: 600; font-size: 0.85rem; color: #8b949e; display: flex; justify-content: space-between; align-items: center; }
+  textarea { width: 100%; height: 300px; background: transparent; border: none; color: #e6edf3; font-family: 'SF Mono', 'Fira Code', monospace; font-size: 0.85rem; padding: 1rem; resize: vertical; outline: none; }
+  .output { padding: 1rem; font-family: 'SF Mono', 'Fira Code', monospace; font-size: 0.82rem; line-height: 1.6; height: 300px; overflow-y: auto; white-space: pre-wrap; }
+  .output .section { color: #58a6ff; font-weight: 600; margin-top: 1rem; }
+  .output .section:first-child { margin-top: 0; }
+  .output .rule { color: #e6edf3; }
+  .output .donot { color: #f97316; }
+  .output .detected { color: #3fb950; margin-bottom: 1rem; }
+  button { background: #f97316; color: #fff; border: none; padding: 0.5rem 1.25rem; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 0.85rem; }
+  button:hover { background: #ea580c; }
+  .tools { display: flex; flex-wrap: wrap; gap: 0.5rem; margin: 1.5rem 0; }
+  .tool-badge { background: #21262d; border: 1px solid #30363d; padding: 0.3rem 0.7rem; border-radius: 4px; font-size: 0.75rem; color: #8b949e; }
+  .footer { margin-top: 2rem; text-align: center; color: #8b949e; font-size: 0.85rem; }
+  .footer a { color: #58a6ff; text-decoration: none; }
+  .copy-btn { background: #21262d; color: #8b949e; border: 1px solid #30363d; padding: 0.3rem 0.7rem; border-radius: 4px; cursor: pointer; font-size: 0.75rem; }
+  .copy-btn:hover { background: #30363d; color: #e6edf3; }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1><span>onerules</span> playground</h1>
+  <p class="subtitle">Paste your package.json → see the anti-slop rules for your stack. No install needed.</p>
+
+  <div class="tools">
+    <span class="tool-badge">Claude Code</span>
+    <span class="tool-badge">Cursor</span>
+    <span class="tool-badge">Copilot</span>
+    <span class="tool-badge">Codex</span>
+    <span class="tool-badge">Gemini CLI</span>
+    <span class="tool-badge">Windsurf</span>
+    <span class="tool-badge">Cline</span>
+    <span class="tool-badge">Aider</span>
+    <span class="tool-badge">Roo Code</span>
+    <span class="tool-badge">Trae</span>
+    <span class="tool-badge">Kiro</span>
+    <span class="tool-badge">Continue</span>
+  </div>
+
+  <div class="grid">
+    <div class="panel">
+      <div class="panel-header">
+        <span>package.json</span>
+        <button onclick="generate()">Generate Rules</button>
+      </div>
+      <textarea id="input" spellcheck="false" placeholder='Paste your package.json here...
+
+Example:
+{
+  "dependencies": {
+    "next": "15.0.0",
+    "react": "19.0.0",
+    "@prisma/client": "6.0.0",
+    "zod": "3.24.0",
+    "tailwindcss": "4.0.0",
+    "stripe": "17.0.0"
+  },
+  "devDependencies": {
+    "typescript": "5.7.0",
+    "vitest": "3.0.0"
+  }
+}'></textarea>
+    </div>
+    <div class="panel">
+      <div class="panel-header">
+        <span>Generated CLAUDE.md</span>
+        <button class="copy-btn" onclick="copyOutput()">Copy</button>
+      </div>
+      <div id="output" class="output"><span class="detected">← Paste your package.json and click Generate</span></div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <p>Install the CLI for the full experience: <code>npm i -g @blackforge/onerules</code></p>
+    <p style="margin-top:0.5rem"><a href="https://github.com/Rahulseh1998/onerules">GitHub</a> · <a href="https://www.npmjs.com/package/@blackforge/onerules">npm</a></p>
+  </div>
+</div>
+
+<script>
+const FRAMEWORKS = {
+  next: 'nextjs', nuxt: 'nuxt', '@sveltejs/kit': 'sveltekit', svelte: 'svelte',
+  astro: 'astro', '@remix-run/react': 'remix', remix: 'remix', '@angular/core': 'angular',
+  vue: 'vue', 'react-native': 'react-native', react: 'react',
+  hono: 'hono', fastify: 'fastify', express: 'express',
+  '@tauri-apps/api': 'tauri', electron: 'electron',
+};
+
+const FRAMEWORK_RULES = {
+  nextjs: [
+    "Components are Server Components by default. Only add 'use client' when the component NEEDS browser APIs, event handlers, or useState/useEffect.",
+    "DO NOT use useEffect(() => { fetch('/api/...') }, []) for data loading. Use a Server Component with async/await.",
+    "DO NOT install axios. The Fetch API is built-in, cached by Next.js.",
+    "DO NOT create API routes for operations that should be Server Actions.",
+    "Use next/image for images. Use next/link for navigation.",
+  ],
+  react: [
+    "DO NOT use useMemo or useCallback by default. Only add them when you've measured a performance problem.",
+    "DO NOT use useEffect to sync state. If changing A should change B, compute B from A during render.",
+    "DO NOT create a context for every piece of shared state. Prop drilling 2-3 levels is fine.",
+  ],
+  hono: [
+    "Use zValidator() for request validation. Don't validate manually.",
+    "Use app.route() to compose sub-apps. Use RPC mode with hc client for type safety.",
+    "DO NOT use Express patterns. Use Hono's c context object.",
+  ],
+  vue: [
+    "Use Composition API with <script setup>. No Options API for new code.",
+    "Use ref() for primitives, reactive() for objects.",
+    "DO NOT mutate props. Use defineEmits() or defineModel().",
+  ],
+};
+
+const LIBRARY_RULES = {
+  'prisma': ["Use Prisma Client for queries. DO NOT create a repository wrapper around Prisma.", "DO NOT forget to handle unique constraint violations (P2002)."],
+  '@prisma/client': ["Use Prisma Client for queries. DO NOT create a repository wrapper around Prisma.", "DO NOT forget to handle unique constraint violations (P2002)."],
+  'zod': ["Define schemas once, derive types with z.infer<typeof schema>.", "DO NOT write manual validation when Zod can express it."],
+  'tailwindcss': ["Use Tailwind utility classes directly. DO NOT use @apply.", "DO NOT write custom CSS for things Tailwind handles."],
+  'stripe': ["Use webhooks for payment confirmation. Verify signatures with constructEvent().", "DO NOT store card details. DO NOT use floating point for money."],
+  '@tanstack/react-query': ["Use useQuery for GET, useMutation for POST/PUT/DELETE.", "DO NOT use useEffect + useState for data fetching when React Query is available."],
+  'zustand': ["Keep stores small and focused. Use selectors to avoid re-renders.", "DO NOT put server data in Zustand. Use React Query for server state."],
+  'next-auth': ["Use middleware for route-level auth protection. DO NOT roll your own JWT logic.", "DO NOT store auth state in React context. Use NextAuth's session."],
+};
+
+const BASE_RULES = {
+  principles: [
+    "STOP and understand the full requirement before writing a single line.",
+    "Every change should be the MINIMAL diff that solves the problem.",
+    "Three similar lines are better than a premature abstraction.",
+  ],
+  doNot: [
+    "DO NOT over-abstract. No AbstractFactoryProviderManager.",
+    "DO NOT add try/catch around code that cannot throw.",
+    "DO NOT create interfaces for a single implementation.",
+    "DO NOT add layers that don't exist yet. No service layer for a single database call.",
+    "DO NOT generate TODO, FIXME, or placeholder comments.",
+    "DO NOT create a utils or helpers file. Put code where it's used.",
+  ],
+  security: [
+    "Never hardcode secrets. Use environment variables.",
+    "Validate on the server, not just the client.",
+    "Never use cors({ origin: '*' }) in production.",
+  ],
+};
+
+function generate() {
+  const input = document.getElementById('input').value.trim();
+  const output = document.getElementById('output');
+
+  let pkg;
+  try { pkg = JSON.parse(input); } catch {
+    output.innerHTML = '<span class="donot">Invalid JSON. Paste a valid package.json.</span>';
+    return;
+  }
+
+  const allDeps = { ...pkg.dependencies, ...pkg.devDependencies };
+  const hasTS = !!allDeps.typescript;
+
+  let framework = null;
+  for (const [dep, fw] of Object.entries(FRAMEWORKS)) {
+    if (allDeps[dep]) { framework = fw; break; }
+  }
+
+  const libs = Object.keys(allDeps).filter(d => LIBRARY_RULES[d]);
+  const detected = [framework, hasTS ? 'TypeScript' : 'JavaScript', ...libs].filter(Boolean);
+
+  let html = `<span class="detected">Detected: ${detected.join(' + ')}</span>\n\n`;
+
+  html += '<span class="section">## Principles</span>\n';
+  BASE_RULES.principles.forEach(r => { html += `<span class="rule">- ${esc(r)}</span>\n`; });
+
+  if (hasTS) {
+    html += '\n<span class="section">## TypeScript</span>\n';
+    html += '<span class="rule">- Use strict mode. any is a bug — use unknown with type guards.</span>\n';
+    html += '<span class="rule">- Prefer type over interface. No enum — use as const.</span>\n';
+    html += '<span class="rule">- Infer types when TypeScript can. const x = \'hello\' is sufficient.</span>\n';
+  }
+
+  if (framework && FRAMEWORK_RULES[framework]) {
+    html += `\n<span class="section">## ${framework.charAt(0).toUpperCase() + framework.slice(1)}</span>\n`;
+    FRAMEWORK_RULES[framework].forEach(r => {
+      const cls = r.startsWith('DO NOT') ? 'donot' : 'rule';
+      html += `<span class="${cls}">- ${esc(r)}</span>\n`;
+    });
+  }
+
+  if (libs.length > 0) {
+    html += '\n<span class="section">## Libraries</span>\n';
+    libs.forEach(lib => {
+      LIBRARY_RULES[lib].forEach(r => {
+        const cls = r.includes('DO NOT') ? 'donot' : 'rule';
+        html += `<span class="${cls}">- ${esc(r)}</span>\n`;
+      });
+    });
+  }
+
+  html += '\n<span class="section">## Do Not</span>\n';
+  BASE_RULES.doNot.forEach(r => { html += `<span class="donot">- ${esc(r)}</span>\n`; });
+
+  html += '\n<span class="section">## Security</span>\n';
+  BASE_RULES.security.forEach(r => { html += `<span class="rule">- ${esc(r)}</span>\n`; });
+
+  output.innerHTML = html;
+}
+
+function esc(s) { return s.replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+
+function copyOutput() {
+  const text = document.getElementById('output').innerText;
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = document.querySelector('.copy-btn');
+    btn.textContent = 'Copied!';
+    setTimeout(() => btn.textContent = 'Copy', 2000);
+  });
+}
+</script>
+</body>
+</html>
