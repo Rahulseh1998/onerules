@@ -1,0 +1,55 @@
+{
+  "name": "onerules",
+  "version": "0.1.0",
+  "description": "One command. Every AI tool. Perfect rules.",
+  "type": "module",
+  "bin": {
+    "onerules": "./dist/cli.js"
+  },
+  "files": [
+    "dist",
+    "packs"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit",
+    "lint": "tsc --noEmit && vitest run",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "ai",
+    "claude",
+    "cursor",
+    "copilot",
+    "windsurf",
+    "gemini",
+    "codex",
+    "cline",
+    "aider",
+    "rules",
+    "coding-rules",
+    "claude-code",
+    "cursorrules",
+    "ai-coding",
+    "developer-tools",
+    "cli"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "commander": "^13.1.0",
+    "picocolors": "^1.1.1"
+  },
+  "devDependencies": {
+    "tsup": "^8.4.0",
+    "typescript": "^5.7.0",
+    "vitest": "^3.1.0",
+    "@types/node": "^22.12.0"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

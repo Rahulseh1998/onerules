@@ -1,0 +1,64 @@
+import { mkdir, writeFile, access } from "node:fs/promises";
+import { dirname, join } from "node:path";
+import type { StackProfile, ToolOutput, ToolId, GenerateOptions } from "../types.js";
+import { generateClaude } from "./claude.js";
+import { generateCursor } from "./cursor.js";
+import { generateCopilot } from "./copilot.js";
+import { generateCodex } from "./codex.js";
+import { generateGemini } from "./gemini.js";
+import { generateWindsurf } from "./windsurf.js";
+import { generateCline } from "./cline.js";
+import { generateAider } from "./aider.js";
+
+const generators: Record<ToolId, (profile: StackProfile) => ToolOutput> = {
+  claude: generateClaude,
+  cursor: generateCursor,
+  copilot: generateCopilot,
+  codex: generateCodex,
+  gemini: generateGemini,
+  windsurf: generateWindsurf,
+  cline: generateCline,
+  aider: generateAider,
+};
+
+const ALL_TOOLS: ToolId[] = ["claude", "cursor", "copilot", "codex", "gemini", "windsurf", "cline", "aider"];
+
+export interface GenerateResult {
+  outputs: ToolOutput[];
+  skipped: ToolOutput[];
+}
+
+export async function generateAll(
+  dir: string,
+  profile: StackProfile,
+  options: GenerateOptions = {},
+): Promise<GenerateResult> {
+  const toolIds = options.tools ?? ALL_TOOLS;
+  const outputs: ToolOutput[] = [];
+  const skipped: ToolOutput[] = [];
+
+  for (const toolId of toolIds) {
+    const generator = generators[toolId];
+    if (!generator) continue;
+
+    const output = generator(profile);
+    const fullPath = join(dir, output.filePath);
+
+    if (!options.force) {
+      try {
+        await access(fullPath);
+        skipped.push(output);
+        continue;
+      } catch {}
+    }
+
+    if (!options.dryRun) {
+      await mkdir(dirname(fullPath), { recursive: true });
+      await writeFile(fullPath, output.content, "utf-8");
+    }
+
+    outputs.push(output);
+  }
+
+  return { outputs, skipped };
+}
