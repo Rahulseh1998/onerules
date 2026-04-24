@@ -361,6 +361,155 @@ describe("E2E: Doctor scoring", () => {
 });
 
 // ==========================================
+// Fixture: --merge with existing CLAUDE.md
+// ==========================================
+describe("E2E: Smart merge", () => {
+  let dir: string;
+
+  beforeAll(async () => {
+    dir = await mkdtemp(join(tmpdir(), "onerules-e2e-merge-"));
+    await writeFile(
+      join(dir, "package.json"),
+      JSON.stringify({
+        dependencies: { next: "15.0.0", react: "19.0.0", stripe: "17.0.0" },
+        devDependencies: { typescript: "5.0.0" },
+      }),
+    );
+    await writeFile(
+      join(dir, "CLAUDE.md"),
+      "# My Project Rules\n\nThis is a SaaS billing platform.\n\n## Architecture\n\n- Use event sourcing for all billing events\n- Keep payment logic in src/billing/\n",
+    );
+  });
+
+  afterAll(async () => {
+    await rm(dir, { recursive: true, force: true });
+  });
+
+  it("merge adds rules without destroying existing content", () => {
+    const output = run("--merge -t claude", dir);
+    expect(output).toContain("Merged into 1");
+    expect(output).toContain("rules added");
+  });
+
+  it("preserves project-specific content after merge", async () => {
+    const claude = await readFile(join(dir, "CLAUDE.md"), "utf-8");
+    expect(claude).toContain("SaaS billing platform");
+    expect(claude).toContain("event sourcing");
+    expect(claude).toContain("src/billing/");
+    expect(claude).toContain("onerules — Auto-detected Rules");
+  });
+
+  it("merged file contains Stripe-specific rules", async () => {
+    const claude = await readFile(join(dir, "CLAUDE.md"), "utf-8");
+    expect(claude).toContain("webhook");
+  });
+});
+
+// ==========================================
+// Fixture: Tool filter (-t)
+// ==========================================
+describe("E2E: Tool filter", () => {
+  let dir: string;
+
+  beforeAll(async () => {
+    dir = await mkdtemp(join(tmpdir(), "onerules-e2e-filter-"));
+    await writeFile(
+      join(dir, "package.json"),
+      JSON.stringify({ dependencies: { react: "19.0.0" }, devDependencies: { typescript: "5.0.0" } }),
+    );
+  });
+
+  afterAll(async () => {
+    await rm(dir, { recursive: true, force: true });
+  });
+
+  it("-t claude,cursor generates only 2 files", () => {
+    const output = run("-t claude,cursor --force", dir);
+    expect(output).toContain("Generated 2 files");
+    expect(output).toContain("CLAUDE.md");
+    expect(output).toContain("Cursor");
+  });
+
+  it("-t copilot generates only 1 file", () => {
+    const output = run("-t copilot --force", dir);
+    expect(output).toContain("Generated 1 file");
+    expect(output).toContain("Copilot");
+  });
+});
+
+// ==========================================
+// Fixture: ai --output
+// ==========================================
+describe("E2E: AI prompt output", () => {
+  let dir: string;
+
+  beforeAll(async () => {
+    dir = await mkdtemp(join(tmpdir(), "onerules-e2e-ai-"));
+    await writeFile(
+      join(dir, "package.json"),
+      JSON.stringify({ dependencies: { next: "15.0.0" }, devDependencies: { typescript: "5.0.0" } }),
+    );
+  });
+
+  afterAll(async () => {
+    await rm(dir, { recursive: true, force: true });
+  });
+
+  it("ai -o writes prompt to file", async () => {
+    const outputFile = join(dir, "prompt.md");
+    run(`ai -o ${outputFile}`, dir);
+    const content = await readFile(outputFile, "utf-8");
+    expect(content).toContain("Generate Project-Specific Coding Rules");
+    expect(content).toContain("nextjs");
+  });
+
+  it("ai stdout contains project structure", () => {
+    const output = run("ai", dir);
+    expect(output).toContain("File Structure");
+    expect(output).toContain("package.json");
+  });
+});
+
+// ==========================================
+// Fixture: Monorepo
+// ==========================================
+describe("E2E: Monorepo", () => {
+  let dir: string;
+
+  beforeAll(async () => {
+    dir = await mkdtemp(join(tmpdir(), "onerules-e2e-mono-"));
+    await writeFile(join(dir, "package.json"), JSON.stringify({ workspaces: ["apps/*", "packages/*"] }));
+    await writeFile(join(dir, "pnpm-workspace.yaml"), "packages:\n  - 'apps/*'\n  - 'packages/*'\n");
+    await mkdir(join(dir, "apps/web"), { recursive: true });
+    await writeFile(
+      join(dir, "apps/web/package.json"),
+      JSON.stringify({ dependencies: { next: "15.0.0", react: "19.0.0" }, devDependencies: { typescript: "5.0.0" } }),
+    );
+    await mkdir(join(dir, "packages/shared"), { recursive: true });
+    await writeFile(
+      join(dir, "packages/shared/package.json"),
+      JSON.stringify({ devDependencies: { typescript: "5.0.0" } }),
+    );
+  });
+
+  afterAll(async () => {
+    await rm(dir, { recursive: true, force: true });
+  });
+
+  it("detects monorepo", () => {
+    const output = run("inspect", dir);
+    expect(output).toContain("Monorepo:");
+    expect(output).toContain("yes");
+  });
+
+  it("monorepo command finds workspaces", () => {
+    const output = run("monorepo --force", dir);
+    expect(output).toContain("Found");
+    expect(output).toContain("workspaces");
+  });
+});
+
+// ==========================================
 // Fixture: Empty directory
 // ==========================================
 describe("E2E: Edge cases", () => {
