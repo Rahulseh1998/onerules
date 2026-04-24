@@ -1,10 +1,11 @@
 {
-  "name": "onerules",
-  "version": "0.1.0",
+  "name": "allrules",
+  "version": "0.1.1",
   "description": "One command. Every AI tool. Perfect rules.",
   "type": "module",
   "bin": {
-    "onerules": "./dist/cli.js"
+    "onerules": "dist/cli.js",
+    "allrules": "dist/cli.js"
   },
   "files": [
     "dist",

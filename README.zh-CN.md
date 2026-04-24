@@ -7,8 +7,8 @@
 </p>
 
 <p align="center">
-  <a href="https://www.npmjs.com/package/onerules"><img src="https://img.shields.io/npm/v/onerules.svg" alt="npm version"></a>
-  <a href="https://www.npmjs.com/package/onerules"><img src="https://img.shields.io/npm/dm/onerules.svg" alt="npm downloads"></a>
+  <a href="https://www.npmjs.com/package/allrules"><img src="https://img.shields.io/npm/v/allrules.svg" alt="npm version"></a>
+  <a href="https://www.npmjs.com/package/allrules"><img src="https://img.shields.io/npm/dm/allrules.svg" alt="npm downloads"></a>
   <a href="https://github.com/onerules/onerules/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="license"></a>
 </p>
 
@@ -40,7 +40,7 @@
 ## 快速开始
 
 ```bash
-npx onerules
+npx allrules
 ```
 
 就这样。无需安装，无需 API 密钥，无需配置。完全离线运行。
@@ -88,12 +88,12 @@ pnpm, yarn, bun, npm, uv, poetry, pip, cargo, bundler | Vitest, Jest, Playwright
 ## 命令
 
 ```bash
-npx onerules                     # 为所有 10 个工具生成规则
-npx onerules -t claude,cursor    # 只为指定工具生成
-npx onerules --force             # 覆盖已存在的文件
-npx onerules --dry-run           # 预览而不写入
-npx onerules -d ./my-project     # 指定项目目录
-npx onerules diff                # 显示将要生成的内容
+npx allrules                     # 为所有 10 个工具生成规则
+npx allrules -t claude,cursor    # 只为指定工具生成
+npx allrules --force             # 覆盖已存在的文件
+npx allrules --dry-run           # 预览而不写入
+npx allrules -d ./my-project     # 指定项目目录
+npx allrules diff                # 显示将要生成的内容
 ```
 
 ## 常见问题
