@@ -52,7 +52,9 @@ export type ToolId =
   | "cline"
   | "aider"
   | "roo"
-  | "trae";
+  | "trae"
+  | "kiro"
+  | "continue";
 
 export interface ToolOutput {
   toolId: ToolId;

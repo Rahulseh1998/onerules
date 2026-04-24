@@ -1,12 +1,33 @@
 import { Command } from "commander";
 import pc from "picocolors";
 import { resolve } from "node:path";
+import { readFile } from "node:fs/promises";
+import { join } from "node:path";
 import { detectStack } from "./detect/index.js";
 import { generateAll } from "./generate/index.js";
 import { formatStackSummary } from "./generate/common.js";
-import type { ToolId } from "./types.js";
+import type { ToolId, ToolOutput } from "./types.js";
 
-const VERSION = "0.3.1";
+async function checkGitignore(dir: string, outputs: ToolOutput[]): Promise<string[]> {
+  try {
+    const content = await readFile(join(dir, ".gitignore"), "utf-8");
+    const patterns = content.split("\n").map((l) => l.trim()).filter((l) => l && !l.startsWith("#"));
+    const ignored: string[] = [];
+    for (const out of outputs) {
+      for (const pattern of patterns) {
+        if (out.filePath.startsWith(pattern) || out.filePath.includes(pattern)) {
+          ignored.push(out.filePath);
+          break;
+        }
+      }
+    }
+    return ignored;
+  } catch {
+    return [];
+  }
+}
+
+const VERSION = "0.4.0";
 
 const program = new Command();
 
@@ -49,11 +70,16 @@ program
       : undefined;
 
     // Generate
-    const { outputs, skipped } = await generateAll(dir, profile, {
+    const { outputs, skipped, hasCustomRules } = await generateAll(dir, profile, {
       tools,
       force: opts.force,
       dryRun: opts.dryRun,
     });
+
+    if (hasCustomRules) {
+      console.log(`  ${pc.cyan("Custom:")} ${pc.dim(".onerulesrc loaded")}`);
+      console.log();
+    }
 
     if (outputs.length > 0) {
       const label = opts.dryRun ? "Would generate" : "Generated";
@@ -79,6 +105,15 @@ program
     console.log();
 
     if (!opts.dryRun && outputs.length > 0) {
+      const ignored = await checkGitignore(dir, outputs);
+      if (ignored.length > 0) {
+        console.log(`  ${pc.yellow("⚠ Warning:")} These files may be in .gitignore:`);
+        for (const f of ignored) {
+          console.log(`    ${pc.yellow("!")} ${pc.dim(f)}`);
+        }
+        console.log(pc.dim("    Remove them from .gitignore so AI tools can read them."));
+        console.log();
+      }
       console.log(pc.dim("  Done. Add these files to your repo and your AI tools will follow them."));
       console.log();
     }

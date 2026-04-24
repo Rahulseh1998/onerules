@@ -1,14 +1,25 @@
+import { readFile } from "node:fs/promises";
+import { join } from "node:path";
 import type { StackProfile, RuleSet } from "../types.js";
 import { getBaseRules, getLanguageRules, getToolingRules } from "../templates/base.js";
 import { getFrameworkRules } from "../templates/fragments/index.js";
 
-export function buildRuleSet(profile: StackProfile): RuleSet {
+export function buildRuleSet(profile: StackProfile, customRules?: RuleSet): RuleSet {
   const base = getBaseRules();
   const lang = getLanguageRules(profile);
   const tooling = getToolingRules(profile);
   const framework = getFrameworkRules(profile.framework);
 
-  return mergeRuleSets(base, lang, tooling, framework ?? {});
+  return mergeRuleSets(base, lang, tooling, framework ?? {}, customRules ?? {});
+}
+
+export async function loadCustomRules(dir: string): Promise<RuleSet | undefined> {
+  try {
+    const content = await readFile(join(dir, ".onerulesrc"), "utf-8");
+    return JSON.parse(content) as RuleSet;
+  } catch {
+    return undefined;
+  }
 }
 
 function mergeRuleSets(...sets: RuleSet[]): RuleSet {

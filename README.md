@@ -89,7 +89,7 @@ No API keys. No config. Works offline.
   Done in 1.2s
 ```
 
-## 10 AI Tools, One Command
+## 12 AI Tools, One Command
 
 | Tool | File Generated |
 |------|------|
@@ -103,12 +103,16 @@ No API keys. No config. Works offline.
 | Aider | `CONVENTIONS.md` |
 | Roo Code | `.roo/rules/onerules.md` |
 | Trae | `.trae/rules/onerules.md` |
+| Kiro (AWS) | `.kiro/rules/onerules.md` |
+| Continue | `.continue/rules/onerules.md` |
 
 ## Features
 
 - **Anti-slop rules** — every rule targets a specific AI code generation failure mode, not generic advice
-- **10 AI tools** — generates the correct file format for each tool
-- **18 frameworks** — deep rules for Next.js, React, Vue, Nuxt, SvelteKit, Angular, Astro, Remix, Express, Fastify, Hono, FastAPI, Django, Flask, Rails, Gin, Fiber, Axum
+- **12 AI tools** — generates the correct file format for each tool
+- **23 frameworks** — deep rules for Next.js, React, Vue, Nuxt, Svelte, SvelteKit, Angular, Astro, Remix, Express, Fastify, Hono, FastAPI, Django, Flask, Rails, Gin, Fiber, Actix, Axum, Tauri, Electron, React Native
+- **Custom rules** — add a `.onerulesrc` file with your own rules that survive `onerules update`
+- **Gitignore aware** — warns if generated files are in your `.gitignore`
 - **Zero-config** — auto-detects stack from package.json, pyproject.toml, go.mod, Cargo.toml, or Gemfile
 - **No LLM required** — deterministic, fast (<2s), works completely offline
 - **Safe by default** — skips existing files unless you use `--force`
@@ -117,7 +121,7 @@ No API keys. No config. Works offline.
 
 **Languages:** TypeScript, JavaScript, Python, Go, Rust, Ruby
 
-**Frameworks (with anti-slop rules):** Next.js, React, Vue, Nuxt, SvelteKit, Angular, Astro, Remix, Express, Fastify, Hono, FastAPI, Django, Flask, Rails, Gin, Fiber, Axum
+**Frameworks (with anti-slop rules):** Next.js, React, Vue, Nuxt, Svelte, SvelteKit, Angular, Astro, Remix, Express, Fastify, Hono, FastAPI, Django, Flask, Rails, Gin, Fiber, Actix, Axum, Tauri, Electron, React Native
 
 **Tooling:** pnpm, yarn, bun, npm, uv, poetry, pip, cargo, bundler | Vitest, Jest, Playwright, Cypress, pytest, RSpec | ESLint, Biome, Ruff, RuboCop | Prettier, dprint, Black
 
@@ -131,6 +135,19 @@ onerules --dry-run               # Preview without writing
 onerules -d ./my-project         # Specify project directory
 onerules update                  # Re-detect and regenerate all files
 onerules diff                    # Show what would be generated
+```
+
+## Custom Rules (`.onerulesrc`)
+
+Add a `.onerulesrc` file to your project root to add custom rules that get merged into all generated files. Survives `onerules update`.
+
+```json
+{
+  "projectContext": "This is a fintech app handling real money.",
+  "principles": ["Always explain your reasoning before writing code."],
+  "doNot": ["DO NOT use any ORM. Write raw SQL queries.", "DO NOT use floating point for money. Use integers (cents)."],
+  "security": ["All endpoints require authentication. No public endpoints."]
+}
 ```
 
 ## Example Rules

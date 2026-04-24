@@ -1,6 +1,7 @@
 import { mkdir, writeFile, access } from "node:fs/promises";
 import { dirname, join } from "node:path";
-import type { StackProfile, ToolOutput, ToolId, GenerateOptions } from "../types.js";
+import type { StackProfile, ToolOutput, ToolId, RuleSet, GenerateOptions } from "../types.js";
+import { loadCustomRules, buildRuleSet, renderMarkdownRules, formatStackSummary } from "./common.js";
 import { generateClaude } from "./claude.js";
 import { generateCursor } from "./cursor.js";
 import { generateCopilot } from "./copilot.js";
@@ -11,8 +12,10 @@ import { generateCline } from "./cline.js";
 import { generateAider } from "./aider.js";
 import { generateRoo } from "./roo.js";
 import { generateTrae } from "./trae.js";
+import { generateKiro } from "./kiro.js";
+import { generateContinue } from "./continue.js";
 
-const generators: Record<ToolId, (profile: StackProfile) => ToolOutput> = {
+const generators: Record<ToolId, (profile: StackProfile, customRules?: RuleSet) => ToolOutput> = {
   claude: generateClaude,
   cursor: generateCursor,
   copilot: generateCopilot,
@@ -23,13 +26,16 @@ const generators: Record<ToolId, (profile: StackProfile) => ToolOutput> = {
   aider: generateAider,
   roo: generateRoo,
   trae: generateTrae,
+  kiro: generateKiro,
+  continue: generateContinue,
 };
 
-const ALL_TOOLS: ToolId[] = ["claude", "cursor", "copilot", "codex", "gemini", "windsurf", "cline", "aider", "roo", "trae"];
+const ALL_TOOLS: ToolId[] = ["claude", "cursor", "copilot", "codex", "gemini", "windsurf", "cline", "aider", "roo", "trae", "kiro", "continue"];
 
 export interface GenerateResult {
   outputs: ToolOutput[];
   skipped: ToolOutput[];
+  hasCustomRules: boolean;
 }
 
 export async function generateAll(
@@ -40,12 +46,13 @@ export async function generateAll(
   const toolIds = options.tools ?? ALL_TOOLS;
   const outputs: ToolOutput[] = [];
   const skipped: ToolOutput[] = [];
+  const customRules = await loadCustomRules(dir);
 
   for (const toolId of toolIds) {
     const generator = generators[toolId];
     if (!generator) continue;
 
-    const output = generator(profile);
+    const output = generator(profile, customRules);
     const fullPath = join(dir, output.filePath);
 
     if (!options.force) {
@@ -64,5 +71,5 @@ export async function generateAll(
     outputs.push(output);
   }
 
-  return { outputs, skipped };
+  return { outputs, skipped, hasCustomRules: !!customRules };
 }

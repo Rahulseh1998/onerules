@@ -17,12 +17,18 @@ import { getFlaskRules } from "./flask.js";
 import { getAngularRules } from "./angular.js";
 import { getFastifyRules } from "./fastify.js";
 import { getFiberRules } from "./fiber.js";
+import { getSvelteRules } from "./svelte.js";
+import { getActixRules } from "./actix.js";
+import { getTauriRules } from "./tauri.js";
+import { getElectronRules } from "./electron.js";
+import { getReactNativeRules } from "./react-native.js";
 
 const frameworkRules: Partial<Record<Framework, () => RuleSet>> = {
   nextjs: getNextjsRules,
   react: getReactRules,
   vue: getVueRules,
   nuxt: getNuxtRules,
+  svelte: getSvelteRules,
   sveltekit: getSveltekitRules,
   angular: getAngularRules,
   astro: getAstroRules,
@@ -36,7 +42,11 @@ const frameworkRules: Partial<Record<Framework, () => RuleSet>> = {
   rails: getRailsRules,
   gin: getGinRules,
   fiber: getFiberRules,
+  actix: getActixRules,
   axum: getAxumRules,
+  tauri: getTauriRules,
+  electron: getElectronRules,
+  "react-native": getReactNativeRules,
 };
 
 export function getFrameworkRules(framework: Framework | null): RuleSet | null {
